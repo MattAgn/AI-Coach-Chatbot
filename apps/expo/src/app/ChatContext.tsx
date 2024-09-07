@@ -1,18 +1,23 @@
 import type { Dispatch, ReactNode, SetStateAction } from "react";
+import type { Channel } from "stream-chat";
 import React, { useState } from "react";
 
 interface ChatContextType {
-  channel: string | null;
-  setChannel: Dispatch<SetStateAction<string | null>>;
+  channel: Channel | null;
+  setChannel: Dispatch<Channel | null>;
   thread: string | null;
   setThread: Dispatch<SetStateAction<string | null>>;
 }
 
 export const ChatContext = React.createContext<ChatContextType>({
-  channel: "gpt",
-  setChannel: () => {},
+  channel: null,
+  setChannel: () => {
+    throw new Error("setChannel function must be overridden");
+  },
   thread: null,
-  setThread: () => {},
+  setThread: () => {
+    throw new Error("setThread function must be overridden");
+  },
 });
 
 interface ChatProviderProps {
@@ -20,7 +25,7 @@ interface ChatProviderProps {
 }
 
 export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
-  const [channel, setChannel] = useState<string | null>(null);
+  const [channel, setChannel] = useState<Channel | null>(null);
   const [thread, setThread] = useState<string | null>(null);
 
   return (

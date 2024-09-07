@@ -1,11 +1,8 @@
 import { Text, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
-import { OverlayProvider } from "stream-chat-expo";
 
-import { chatApiKey, chatUserId } from "../chatConfig";
-import { ChatProvider } from "./ChatContext";
+import { MyChats } from "~/components/MyChats";
 import { useChatClient } from "./useChatClient";
 
 export default function Index() {
@@ -16,17 +13,12 @@ export default function Index() {
   }
 
   return (
-    <ChatProvider>
-      <GestureHandlerRootView>
-        <OverlayProvider>
-          <SafeAreaView className="bg-background">
-            <Stack.Screen options={{ title: "Chatbot" }} />
-            <View className="h-full w-full bg-background p-4">
-              <Text>Coucou</Text>
-            </View>
-          </SafeAreaView>
-        </OverlayProvider>
-      </GestureHandlerRootView>
-    </ChatProvider>
+    <SafeAreaView className="bg-background">
+      <Stack.Screen options={{ title: "StreamChatbot" }} />
+      <View className="h-full w-full bg-background p-4">
+        <Text>Chat with your sleep coach</Text>
+        <MyChats />
+      </View>
+    </SafeAreaView>
   );
 }
