@@ -1,9 +1,9 @@
 import "@bacons/text-decoder/install";
 
+import type { DeepPartial, Theme } from "stream-chat-expo";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useColorScheme } from "nativewind";
 import { Chat, OverlayProvider } from "stream-chat-expo";
 
 import { TRPCProvider } from "~/utils/api";
@@ -14,27 +14,27 @@ import "../styles.css";
 
 import { StreamChat } from "stream-chat";
 
+const theme: DeepPartial<Theme> = {
+  channelListMessenger: {
+    flatList: {
+      backgroundColor: "transparent",
+    },
+    flatListContent: {
+      backgroundColor: "transparent",
+    },
+  },
+};
+
 const chatClient = StreamChat.getInstance(chatApiKey);
 
 export default function RootLayout() {
-  const { colorScheme } = useColorScheme();
   return (
     <TRPCProvider>
       <ChatProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <OverlayProvider>
+          <OverlayProvider value={{ style: theme }}>
             <Chat client={chatClient}>
-              <Stack
-                screenOptions={{
-                  headerStyle: {
-                    backgroundColor: "#f472b6",
-                  },
-                  contentStyle: {
-                    backgroundColor:
-                      colorScheme == "dark" ? "#09090B" : "#FFFFFF",
-                  },
-                }}
-              />
+              <Stack />
               <StatusBar />
             </Chat>
           </OverlayProvider>
