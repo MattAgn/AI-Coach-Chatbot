@@ -4,15 +4,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 
 import { MyChats } from "~/components/MyChats";
-import { useChatClient } from "./useChatClient";
 
 export default function Index() {
-  const { clientIsReady } = useChatClient();
-
-  if (!clientIsReady) {
-    return <Text>Loading chat ...</Text>;
-  }
-
   return (
     <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.container}>
       <SafeAreaView>

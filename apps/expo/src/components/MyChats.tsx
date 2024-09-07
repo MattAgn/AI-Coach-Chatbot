@@ -1,23 +1,36 @@
 import type { Channel } from "stream-chat";
 import type { ChannelPreviewMessengerProps } from "stream-chat-expo";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { router } from "expo-router";
 import { Avatar, ChannelList, useChannelsContext } from "stream-chat-expo";
 
 import { useChat } from "~/app/ChatContext";
+import { useChatClient } from "~/app/useChatClient";
 import { chatUserId } from "~/chatConfig";
 
 export const MyChats = () => {
   const { setChannel } = useChat();
+  const { clientIsReady } = useChatClient();
   const filters = {
     members: {
       $in: [chatUserId],
     },
   };
 
+  if (!clientIsReady) {
+    return <CustomLoadingIndicator />;
+  }
+
   return (
     <ChannelList
       filters={filters}
+      LoadingIndicator={CustomLoadingIndicator}
       Preview={CustomChannelPreview}
       onSelect={(channel: Channel) => {
         setChannel(channel);
@@ -60,3 +73,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+const CustomLoadingIndicator = () => {
+  return (
+    <View style={{ justifyContent: "center", flex: 1 }}>
+      <ActivityIndicator color={"white"} size={"large"} />
+    </View>
+  );
+};
