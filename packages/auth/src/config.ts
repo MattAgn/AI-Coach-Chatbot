@@ -37,7 +37,7 @@ export const authConfig = {
         trustHost: true,
       }
     : {}),
-  secret: env.AUTH_SECRET,
+  // secret: env.AUTH_SECRET,
   providers: [Discord],
   callbacks: {
     session: (opts) => {
