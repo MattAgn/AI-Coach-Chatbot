@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { OverlayProvider } from "stream-chat-expo";
 
+import { chatApiKey, chatUserId } from "../chatConfig";
 import { ChatProvider } from "./ChatContext";
 import { useChatClient } from "./useChatClient";
 
