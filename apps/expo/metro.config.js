@@ -17,7 +17,6 @@ const config = withTurborepoManagedCache(
 // XXX: Resolve our exports in workspace packages
 // https://github.com/expo/expo/issues/26926
 config.resolver.unstable_enablePackageExports = true;
-
 module.exports = config;
 
 /**
@@ -39,6 +38,13 @@ function withMonorepoPaths(config) {
   config.resolver.nodeModulesPaths = [
     path.resolve(projectRoot, "node_modules"),
     path.resolve(workspaceRoot, "node_modules"),
+  ];
+
+  // Fix from here https://github.com/expo/expo/issues/30870 to avoid axios issues
+  config.resolver.unstable_conditionNames = [
+    "browser",
+    "require",
+    "react-native",
   ];
 
   return config;
