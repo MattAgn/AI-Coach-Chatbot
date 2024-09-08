@@ -1,31 +1,32 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
+import { ChannelList } from "stream-chat-expo";
 
 import { useChannelsByCategory } from "~/api/useChannelsByCategory";
 import { chatUserId } from "~/chatConfig";
+import { Loader } from "~/components/Loader";
+import { PageHeader } from "~/components/PageHeader";
 import { getChatClient } from "~/utils/chatClient";
 import { Category, coachByCategory } from "~/utils/coachByCategory";
 import { useChat } from "../ChatContext";
+import { useChatClient } from "../useChatClient";
 
 export default function MyChats() {
   const { setChannel } = useChat();
   const { category } = useLocalSearchParams();
+  const { clientIsReady } = useChatClient();
+  const { data } = useChannelsByCategory(category as Category);
+
   if (typeof category !== "string") {
     throw new Error("Category must be a string");
   }
 
-  const { data, refetch } = useChannelsByCategory(category as Category);
+  const filter = { type: category, members: { $in: [chatUserId] } };
 
   const startNewChat = async () => {
     try {
-      if (!getChatClient().userID) {
-        await getChatClient().connectUser(
-          { id: chatUserId },
-          getChatClient().devToken(chatUserId),
-        );
-      }
       const channelId = `${category}-${data?.length ?? 0 + 1}`;
       const channel = getChatClient().channel(category, channelId, {
         name: channelId,
@@ -39,35 +40,43 @@ export default function MyChats() {
 
       await channel.create();
       await channel.addMembers([coachId, chatUserId]);
-      refetch();
     } catch (error) {
       console.log(error);
     }
   };
 
+  if (!clientIsReady) {
+    return <Loader />;
+  }
+
   return (
     <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.container}>
       <SafeAreaView>
-        <Stack.Screen />
+        <Stack.Screen
+          options={{
+            title: category,
+            header: () => <PageHeader title={category} />,
+            headerTransparent: true,
+          }}
+        />
         <View className="h-full w-full p-4">
-          <Text style={styles.title}>{category}</Text>
-          <TouchableOpacity onPress={() => startNewChat()}>
-            <Text style={styles.title}>New chat</Text>
+          <TouchableOpacity
+            onPress={() => {
+              console.log("coucou");
+              startNewChat();
+            }}
+          >
+            <Text style={styles.buttonNewChat}>New chat</Text>
           </TouchableOpacity>
-          {data?.map((channel) => (
-            <Link asChild href={"/chat"} key={channel.cid}>
-              <TouchableOpacity
-                key={channel.cid}
-                onPress={() => {
-                  console.log(channel.cid);
-                  setChannel(channel);
-                }}
-                style={{ backgroundColor: "white", padding: 10, margin: 5 }}
-              >
-                <Text>{channel.data?.name}</Text>
-              </TouchableOpacity>
-            </Link>
-          ))}
+          <ChannelList
+            filters={filter}
+            LoadingIndicator={Loader}
+            // Preview={CustomChannelPreview}
+            onSelect={(channel) => {
+              setChannel(channel);
+              router.navigate("/chat");
+            }}
+          />
         </View>
       </SafeAreaView>
     </LinearGradient>
@@ -78,12 +87,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  title: {
-    fontSize: 23,
+  buttonNewChat: {
+    fontSize: 22,
     textAlign: "center",
     fontWeight: "bold",
-    marginBottom: 50,
-    marginTop: 40,
+    marginTop: 70,
+    marginBottom: 30,
+    padding: 10,
     color: "white",
   },
 });

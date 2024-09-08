@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
-import { ChannelId } from "node_modules/@acme/api/dist/router/chatbot";
 import { Event } from "stream-chat";
 import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 
@@ -19,7 +18,7 @@ export default function Chat() {
     const handleNewMessage = async (event: Event) => {
       try {
         const userRole = event?.message?.user?.role;
-        const channelId = event.channel_id as ChannelId;
+        const channelId = event.channel_id as string;
         const category = event.channel_type as Category;
 
         if (
@@ -49,11 +48,7 @@ export default function Chat() {
 
   return (
     <SafeAreaView className="bg-background">
-      <Stack.Screen
-        options={{
-          title: channel.data?.name ?? "Chat",
-        }}
-      />
+      <Stack.Screen options={{ headerBackTitle: "Back", title: "Chat" }} />
       <Channel channel={channel}>
         <MessageList />
         <MessageInput />
