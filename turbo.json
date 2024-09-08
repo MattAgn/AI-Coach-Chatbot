@@ -51,7 +51,9 @@
     "AUTH_REDIRECT_PROXY_URL",
     "AUTH_SECRET",
     "PORT",
-    "OPENAI_API_KEY"
+    "OPENAI_API_KEY",
+    "STREAM_API_KEY",
+    "STREAM_SECRET"
   ],
   "globalPassThroughEnv": [
     "NODE_ENV",
