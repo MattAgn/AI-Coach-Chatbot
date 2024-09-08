@@ -13,21 +13,23 @@ const client = new OpenAI({
 const STREAM_API_KEY = process.env.STREAM_API_KEY;
 const STREAM_SECRET = process.env.STREAM_SECRET;
 
-export enum ChannelId {
+export enum Category {
   Sleep = "Sleep",
   Nutrition = "Nutrition",
   Sport = "Sport",
 }
 
-const coachByChannel: Record<ChannelId, string> = {
-  [ChannelId.Sleep]: "sleep-ai-coach",
-  [ChannelId.Nutrition]: "nutrition-ai-coach",
-  [ChannelId.Sport]: "sport-ai-coach",
+const coachByChannel: Record<Category, string> = {
+  [Category.Sleep]: "sleep-ai-coach",
+  [Category.Nutrition]: "nutrition-ai-coach",
+  [Category.Sport]: "sport-ai-coach",
 };
 
 export const chatbotRouter = {
   getChatGptResponse: publicProcedure
-    .input(z.object({ channelId: z.nativeEnum(ChannelId) }))
+    .input(
+      z.object({ category: z.nativeEnum(Category), channelId: z.string() }),
+    )
     .mutation(async ({ input }) => {
       if (!STREAM_API_KEY || !STREAM_SECRET) {
         throw new Error("STREAM_API_KEY and STREAM_SECRET are required");
@@ -35,7 +37,7 @@ export const chatbotRouter = {
 
       const chatClient = StreamChat.getInstance(STREAM_API_KEY, STREAM_SECRET);
 
-      const channel = chatClient.channel("Chatgpt", input.channelId);
+      const channel = chatClient.channel(input.category, input.channelId);
 
       const { messages: chatHistory } = await channel.query({
         messages: { limit: 30 },
@@ -46,7 +48,7 @@ export const chatbotRouter = {
         messages: [
           {
             role: "system",
-            content: getCoachingPrompt(input.channelId),
+            content: getCoachingPrompt(input.category),
           },
           ...adaptStreamMessagesToGptMessages(chatHistory),
         ],
@@ -60,15 +62,15 @@ export const chatbotRouter = {
 
       const gptmessage = {
         text: message,
-        user_id: coachByChannel[input.channelId],
+        user_id: coachByChannel[input.category],
       };
       channel.sendMessage(gptmessage);
       return { botResponse: message };
     }),
 } satisfies TRPCRouterRecord;
 
-const getCoachingPrompt = (channelId: ChannelId) => `
-You are an expert ${channelId.toLowerCase()} coach. 
+const getCoachingPrompt = (category: Category) => `
+You are an expert ${category.toLowerCase()} coach. 
 You are friendly and casual. 
 You asks questions first before giving concise solutions. 
 You decline if you get asked questions on topics other than your expertise.

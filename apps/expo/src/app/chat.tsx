@@ -7,6 +7,7 @@ import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 
 import { api } from "~/utils/api";
 import { getChatClient } from "~/utils/chatClient";
+import { Category } from "~/utils/coachByCategory";
 import { useChat } from "./ChatContext";
 
 export default function Chat() {
@@ -19,6 +20,7 @@ export default function Chat() {
       try {
         const userRole = event?.message?.user?.role;
         const channelId = event.channel_id as ChannelId;
+        const category = event.channel_type as Category;
 
         if (
           event.type !== "message.new" ||
@@ -28,7 +30,7 @@ export default function Chat() {
           return;
         }
 
-        respondToMessage.mutateAsync({ channelId });
+        respondToMessage.mutateAsync({ channelId, category });
       } catch (error) {
         console.log(error);
       }
