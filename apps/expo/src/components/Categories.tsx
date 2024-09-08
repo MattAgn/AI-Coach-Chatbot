@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Link } from "expo-router";
 
 export const Categories = () => {
   return (
@@ -12,20 +13,28 @@ export const Categories = () => {
 
 const CategoryCard = ({ category }: { category: string }) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={() => {}}>
-      <Text style={styles.channelName}>{category}</Text>
-    </TouchableOpacity>
+    <Link
+      href={{
+        pathname: "/my-chats/[category]",
+        params: { category },
+      }}
+      asChild
+    >
+      <TouchableOpacity style={styles.card}>
+        <Text style={styles.channelName}>{category}</Text>
+      </TouchableOpacity>
+    </Link>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
+    backgroundColor: "#d9c2ff",
+    marginBottom: 20,
+    borderRadius: 30,
     flexDirection: "row",
     alignItems: "center",
     gap: 30,
-    marginBottom: 20,
-    borderRadius: 30,
-    backgroundColor: "#d9c2ff",
     padding: 50,
   },
   channelName: {
