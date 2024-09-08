@@ -20,15 +20,11 @@ export default function Chat() {
     const handleNewMessage = async (event: Event) => {
       try {
         const userRole = event?.message?.user?.role;
-        const channelType = event?.channel_type;
         const channelId = event.channel_id as ChannelId;
-        const message = event?.message?.text;
 
         if (
           event.type !== "message.new" ||
           userRole === "speaker" ||
-          !message ||
-          !channelType ||
           !channelId
         ) {
           return;
