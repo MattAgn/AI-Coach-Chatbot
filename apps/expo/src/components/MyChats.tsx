@@ -73,11 +73,3 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
-const CustomLoadingIndicator = () => {
-  return (
-    <View style={{ justifyContent: "center", flex: 1 }}>
-      <ActivityIndicator color={"white"} size={"large"} />
-    </View>
-  );
-};
