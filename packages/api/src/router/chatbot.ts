@@ -31,8 +31,15 @@ export const chatbotRouter = {
     )
     .mutation(async ({ input }) => {
       const chatCompletion = await client.chat.completions.create({
-        messages: [{ role: "user", content: input.message }],
+        messages: [
+          {
+            role: "system",
+            content: getCoachingPrompt(input.channelId),
+          },
+          { role: "user", content: input.message },
+        ],
         model: "gpt-4o",
+        temperature: 0.2,
       });
 
       const message =
@@ -55,3 +62,6 @@ export const chatbotRouter = {
       return { botResponse: message };
     }),
 } satisfies TRPCRouterRecord;
+
+const getCoachingPrompt = (channelId: ChannelId) => `
+You are an expert ${channelId.toLowerCase()} coach. You are friendly and casual. You asks questions first before giving solutions. You give concise solutions`;
