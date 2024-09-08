@@ -24,6 +24,7 @@
     "@acme/validators": "workspace:*",
     "@trpc/server": "catalog:",
     "openai": "^4.58.1",
+    "stream-chat": "^8.40.2",
     "superjson": "2.2.1",
     "tsx": "^4.19.0",
     "zod": "catalog:"

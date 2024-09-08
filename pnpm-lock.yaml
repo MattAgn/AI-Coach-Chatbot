@@ -366,6 +366,9 @@ importers:
       openai:
         specifier: ^4.58.1
         version: 4.58.1(zod@3.23.8)
+      stream-chat:
+        specifier: ^8.40.2
+        version: 8.40.2(bufferutil@4.0.8)
       superjson:
         specifier: 2.2.1
         version: 2.2.1
@@ -7747,6 +7750,10 @@ packages:
 
   stream-chat@8.38.0:
     resolution: {integrity: sha512-hhnbKaH1aqYYySN8+YX8kIyDqcsNhAxQEMxCmhIIBA8i8FSK6/X4dYe/Z0VHlwxUQAf95si5iR1jZCOeAiiOiw==}
+    engines: {node: '>=16'}
+
+  stream-chat@8.40.2:
+    resolution: {integrity: sha512-fzm6FF7aV1zUGzH2mps9LBKKp8lFDnbzTnk5/NhUGlbdWeJlIfbUzxxT8BqFNA5TNyFcVZtT1G06faiHldoU3w==}
     engines: {node: '>=16'}
 
   stream-slice@0.1.2:
@@ -16705,6 +16712,22 @@ snapshots:
       - utf-8-validate
 
   stream-chat@8.38.0(bufferutil@4.0.8):
+    dependencies:
+      '@babel/runtime': 7.25.0
+      '@types/jsonwebtoken': 9.0.6
+      '@types/ws': 7.4.7
+      axios: 1.7.7
+      base64-js: 1.5.1
+      form-data: 4.0.0
+      isomorphic-ws: 4.0.1(ws@7.5.10(bufferutil@4.0.8))
+      jsonwebtoken: 9.0.2
+      ws: 7.5.10(bufferutil@4.0.8)
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - utf-8-validate
+
+  stream-chat@8.40.2(bufferutil@4.0.8):
     dependencies:
       '@babel/runtime': 7.25.0
       '@types/jsonwebtoken': 9.0.6
