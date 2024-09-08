@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
+import { ChannelId } from "node_modules/@acme/api/dist/router/chatbot";
 import { Event, StreamChat } from "stream-chat";
 import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 
@@ -21,7 +21,7 @@ export default function Chat() {
       try {
         const userRole = event?.message?.user?.role;
         const channelType = event?.channel_type;
-        const channelId = event.channel_id;
+        const channelId = event.channel_id as ChannelId;
         const message = event?.message?.text;
 
         if (
@@ -34,7 +34,7 @@ export default function Chat() {
           return;
         }
 
-        respondToMessage.mutateAsync({ message });
+        respondToMessage.mutateAsync({ message, channelId });
       } catch (error) {
         console.log(error);
       }

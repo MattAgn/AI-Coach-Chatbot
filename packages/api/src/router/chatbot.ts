@@ -12,9 +12,23 @@ const client = new OpenAI({
 const STREAM_API_KEY = process.env.STREAM_API_KEY;
 const STREAM_SECRET = process.env.STREAM_SECRET;
 
+export enum ChannelId {
+  Sleep = "Sleep",
+  Nutrition = "Nutrition",
+  Sport = "Sport",
+}
+
+const coachByChannel: Record<ChannelId, string> = {
+  [ChannelId.Sleep]: "sleep-ai-coach",
+  [ChannelId.Nutrition]: "nutrition-ai-coach",
+  [ChannelId.Sport]: "sport-ai-coach",
+};
+
 export const chatbotRouter = {
   getChatGptResponse: publicProcedure
-    .input(z.object({ message: z.string() }))
+    .input(
+      z.object({ message: z.string(), channelId: z.nativeEnum(ChannelId) }),
+    )
     .mutation(async ({ input }) => {
       const chatCompletion = await client.chat.completions.create({
         messages: [{ role: "user", content: input.message }],
@@ -31,11 +45,11 @@ export const chatbotRouter = {
 
       const chatClient = StreamChat.getInstance(STREAM_API_KEY, STREAM_SECRET);
 
-      const channel = chatClient.channel("Chatgpt", "Sleep", {});
+      const channel = chatClient.channel("Chatgpt", input.channelId, {});
 
       const gptmessage = {
         text: message,
-        user_id: "sleep-ai-coach",
+        user_id: coachByChannel[input.channelId],
       };
       channel.sendMessage(gptmessage);
       return { botResponse: message };
