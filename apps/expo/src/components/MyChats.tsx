@@ -1,59 +1,19 @@
-import type { Channel } from "stream-chat";
-import type { ChannelPreviewMessengerProps } from "stream-chat-expo";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { router } from "expo-router";
-import { Avatar, ChannelList, useChannelsContext } from "stream-chat-expo";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { useChat } from "~/app/ChatContext";
-import { useChatClient } from "~/app/useChatClient";
-import { chatUserId } from "~/chatConfig";
-
-export const MyChats = () => {
-  const { setChannel } = useChat();
-  const { clientIsReady } = useChatClient();
-  const filters = {
-    members: {
-      $in: [chatUserId],
-    },
-  };
-
-  if (!clientIsReady) {
-    return <CustomLoadingIndicator />;
-  }
-
+export const Categories = () => {
   return (
-    <ChannelList
-      filters={filters}
-      LoadingIndicator={CustomLoadingIndicator}
-      Preview={CustomChannelPreview}
-      onSelect={(channel: Channel) => {
-        setChannel(channel);
-        router.navigate("./chat");
-      }}
-    />
+    <View>
+      <CategoryCard category="Sleep" />
+      <CategoryCard category="Nutrition" />
+      <CategoryCard category="Sport" />
+    </View>
   );
 };
 
-const CustomChannelPreview = ({ channel }: ChannelPreviewMessengerProps) => {
-  // need to use context because the prop onSelect is undefined https://github.com/GetStream/stream-chat-react-native/issues/1717
-  const { onSelect } = useChannelsContext();
-
-  if (!onSelect) {
-    return null;
-  }
-
+const CategoryCard = ({ category }: { category: string }) => {
   return (
-    <TouchableOpacity style={styles.card} onPress={() => onSelect(channel)}>
-      <>
-        <Avatar image={channel.data?.image} size={60} />
-        <Text style={styles.channelName}>{channel.data?.name}</Text>
-      </>
+    <TouchableOpacity style={styles.card} onPress={() => {}}>
+      <Text style={styles.channelName}>{category}</Text>
     </TouchableOpacity>
   );
 };

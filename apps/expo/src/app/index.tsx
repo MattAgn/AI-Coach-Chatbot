@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 
-import { MyChats } from "~/components/MyChats";
+import { Categories } from "~/components/MyChats";
 
 export default function Index() {
   return (
@@ -17,7 +17,7 @@ export default function Index() {
         />
         <View className="h-full w-full p-4">
           <Text style={styles.title}>Everyday wellness coaching</Text>
-          <MyChats />
+          <Categories />
         </View>
       </SafeAreaView>
     </LinearGradient>
