@@ -34,7 +34,7 @@ export default function Chat() {
           return;
         }
 
-        respondToMessage.mutateAsync({ message, channelId });
+        respondToMessage.mutateAsync({ channelId });
       } catch (error) {
         console.log(error);
       }

@@ -3,6 +3,7 @@ import OpenAI from "openai";
 import { StreamChat } from "stream-chat";
 import { z } from "zod";
 
+import { adaptStreamMessagesToGptMessages } from "../infra/adaptStreamMessagesToGptMessages";
 import { publicProcedure } from "../trpc";
 
 const client = new OpenAI({
@@ -26,17 +27,28 @@ const coachByChannel: Record<ChannelId, string> = {
 
 export const chatbotRouter = {
   getChatGptResponse: publicProcedure
-    .input(
-      z.object({ message: z.string(), channelId: z.nativeEnum(ChannelId) }),
-    )
+    .input(z.object({ channelId: z.nativeEnum(ChannelId) }))
     .mutation(async ({ input }) => {
+      if (!STREAM_API_KEY || !STREAM_SECRET) {
+        throw new Error("STREAM_API_KEY and STREAM_SECRET are required");
+      }
+
+      const chatClient = StreamChat.getInstance(STREAM_API_KEY, STREAM_SECRET);
+
+      const channel = chatClient.channel("Chatgpt", input.channelId);
+
+      const { messages: chatHistory } = await channel.query({
+        messages: { limit: 30 },
+      });
+      console.log(chatHistory);
+
       const chatCompletion = await client.chat.completions.create({
         messages: [
           {
             role: "system",
             content: getCoachingPrompt(input.channelId),
           },
-          { role: "user", content: input.message },
+          ...adaptStreamMessagesToGptMessages(chatHistory),
         ],
         model: "gpt-4o",
         temperature: 0.2,
@@ -45,14 +57,6 @@ export const chatbotRouter = {
       const message =
         chatCompletion.choices[0]?.message.content ??
         "Sorry i'm asleep right now, come back later";
-
-      if (!STREAM_API_KEY || !STREAM_SECRET) {
-        throw new Error("STREAM_API_KEY and STREAM_SECRET are required");
-      }
-
-      const chatClient = StreamChat.getInstance(STREAM_API_KEY, STREAM_SECRET);
-
-      const channel = chatClient.channel("Chatgpt", input.channelId, {});
 
       const gptmessage = {
         text: message,
