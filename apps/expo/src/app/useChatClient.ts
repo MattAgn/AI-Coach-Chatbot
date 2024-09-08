@@ -1,15 +1,12 @@
-// useChatClient.js
-
 import { useEffect, useState } from "react";
-import { StreamChat } from "stream-chat";
 
-import { chatApiKey, chatUserId, chatUserName } from "../chatConfig";
+import { getChatClient } from "~/utils/chatClient";
+import { chatUserId, chatUserName } from "../chatConfig";
 
 const user = {
   id: chatUserId,
   name: chatUserName,
 };
-const chatClient = StreamChat.getInstance(chatApiKey);
 
 export const useChatClient = () => {
   const [clientIsReady, setClientIsReady] = useState(false);
@@ -19,6 +16,7 @@ export const useChatClient = () => {
       try {
         // If the chat client has a value in the field `userID`, a user is already connected
         // and we can skip trying to connect the user again.
+        const chatClient = getChatClient();
         if (!chatClient.userID) {
           await chatClient.connectUser(user, chatClient.devToken(chatUserId));
         }

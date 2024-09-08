@@ -2,14 +2,12 @@ import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { ChannelId } from "node_modules/@acme/api/dist/router/chatbot";
-import { Event, StreamChat } from "stream-chat";
+import { Event } from "stream-chat";
 import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 
-import { chatApiKey } from "~/chatConfig";
 import { api } from "~/utils/api";
+import { getChatClient } from "~/utils/chatClient";
 import { useChat } from "./ChatContext";
-
-const chatClient = StreamChat.getInstance(chatApiKey);
 
 export default function Chat() {
   const { channel } = useChat();
@@ -36,12 +34,12 @@ export default function Chat() {
       }
     };
 
-    chatClient.on("message.new", handleNewMessage);
+    getChatClient().on("message.new", handleNewMessage);
 
     return () => {
-      chatClient.off("message.new", handleNewMessage);
+      getChatClient().off("message.new", handleNewMessage);
     };
-  }, [chatClient, respondToMessage]);
+  }, [respondToMessage]);
 
   if (!channel) {
     return null;
