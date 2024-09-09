@@ -1,17 +1,38 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ImageSourcePropType,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Link } from "expo-router";
 
 export const Categories = () => {
   return (
     <View>
-      <CategoryCard category="Sleep" />
-      <CategoryCard category="Nutrition" />
-      <CategoryCard category="Sport" />
+      <CategoryCard
+        category="Sleep"
+        imagePath={require("../../assets/Sleep.png")}
+      />
+      <CategoryCard
+        category="Nutrition"
+        imagePath={require("../../assets/Nutrition.png")}
+      />
+      <CategoryCard
+        category="Sport"
+        imagePath={require("../../assets/Sport.png")}
+      />
     </View>
   );
 };
 
-const CategoryCard = ({ category }: { category: string }) => {
+const CategoryCard = ({
+  category,
+  imagePath,
+}: {
+  category: string;
+  imagePath: ImageSourcePropType;
+}) => {
   return (
     <Link
       href={{
@@ -21,7 +42,7 @@ const CategoryCard = ({ category }: { category: string }) => {
       asChild
     >
       <TouchableOpacity style={styles.card}>
-        <Text style={styles.channelName}>{category}</Text>
+        <Image source={imagePath} style={styles.image} />
       </TouchableOpacity>
     </Link>
   );
@@ -33,12 +54,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 30,
     flexDirection: "row",
-    alignItems: "center",
     gap: 30,
-    padding: 50,
+    width: "100%",
+    height: 150,
+    overflow: "hidden",
   },
   channelName: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
   },
 });
