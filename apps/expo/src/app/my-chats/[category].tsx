@@ -7,7 +7,6 @@ import { ChannelList } from "stream-chat-expo";
 import { useChannelsByCategory } from "~/api/useChannelsByCategory";
 import { chatUserId } from "~/chatConfig";
 import { Loader } from "~/components/Loader";
-import { PageHeader } from "~/components/PageHeader";
 import { getChatClient } from "~/utils/chatClient";
 import { Category, coachByCategory } from "~/utils/coachByCategory";
 import { useChat } from "../ChatContext";
@@ -55,8 +54,8 @@ export default function MyChats() {
         <Stack.Screen
           options={{
             title: category,
-            header: () => <PageHeader title={category} />,
             headerTransparent: true,
+            headerTintColor: "white",
           }}
         />
         <View className="h-full w-full p-4">
