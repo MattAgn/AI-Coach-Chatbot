@@ -20,8 +20,5 @@ const fetchChannels = async (category: Category) => {
     state: true,
   });
 
-  channels.map((channel) => {
-    console.log(channel.data?.name, channel.cid);
-  });
   return channels;
 };
