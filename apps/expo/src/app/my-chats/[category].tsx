@@ -52,7 +52,7 @@ export default function MyChats() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={{ top: "off" }}>
+    <SafeAreaView style={styles.container} edges={["left", "bottom", "right"]}>
       <Stack.Screen
         options={{
           title: category,
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#6a29d3",
     borderRadius: 30,
     alignSelf: "center",
-    margin: 30,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
     width: 200,
     padding: 10,
     position: "absolute",
-    bottom: 10,
+    bottom: 20,
     // iOS Shadow
     shadowColor: "#000",
     shadowOffset: { width: 3, height: 2 },
