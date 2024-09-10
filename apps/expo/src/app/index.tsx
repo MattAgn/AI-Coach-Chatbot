@@ -16,7 +16,7 @@ export default function Index() {
           }}
         />
         <View className="h-full w-full p-4">
-          <Text style={styles.title}>Everyday wellness coaching</Text>
+          <Text style={styles.title}>AI Coaching</Text>
           <Categories />
         </View>
       </SafeAreaView>

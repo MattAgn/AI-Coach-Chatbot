@@ -15,12 +15,12 @@ export const Categories = () => {
         imagePath={require("../../assets/Sleep.png")}
       />
       <CategoryCard
-        category="Nutrition"
-        imagePath={require("../../assets/Nutrition.png")}
-      />
-      <CategoryCard
         category="Sport"
         imagePath={require("../../assets/Sport.png")}
+      />
+      <CategoryCard
+        category="Nutrition"
+        imagePath={require("../../assets/Nutrition.png")}
       />
     </View>
   );
@@ -56,8 +56,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 30,
     width: "100%",
-    height: 150,
-    overflow: "hidden",
+    height: "27%",
+    // iOS Shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 3, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+
+    // Android Shadow (elevation)
+    elevation: 3,
   },
   channelName: {
     fontSize: 20,
@@ -65,6 +72,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
+    borderRadius: 30,
     height: "100%",
   },
 });
