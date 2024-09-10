@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack, useLocalSearchParams } from "expo-router";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { ChannelList } from "stream-chat-expo";
 
 import { useChannelsByCategory } from "~/api/useChannelsByCategory";
@@ -49,50 +49,66 @@ export default function MyChats() {
   }
 
   return (
-    <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.container}>
-      <SafeAreaView>
-        <Stack.Screen
-          options={{
-            title: category,
-            headerTransparent: true,
-            headerTintColor: "white",
+    <SafeAreaView style={styles.container} edges={{ top: "off" }}>
+      <Stack.Screen
+        options={{
+          title: category,
+          headerBackTitleVisible: false,
+        }}
+      />
+      <View className="h-full w-full">
+        <ChannelList
+          filters={filter}
+          ListHeaderComponent={() => null}
+          LoadingIndicator={Loader}
+          onSelect={(channel) => {
+            setChannel(channel);
+            router.navigate("/chat");
           }}
         />
-        <View className="h-full w-full p-4">
-          <TouchableOpacity
-            onPress={() => {
-              console.log("coucou");
-              startNewChat();
-            }}
-          >
-            <Text style={styles.buttonNewChat}>New chat</Text>
-          </TouchableOpacity>
-          <ChannelList
-            filters={filter}
-            LoadingIndicator={Loader}
-            // Preview={CustomChannelPreview}
-            onSelect={(channel) => {
-              setChannel(channel);
-              router.navigate("/chat");
-            }}
-          />
-        </View>
-      </SafeAreaView>
-    </LinearGradient>
+        <TouchableOpacity
+          onPress={() => startNewChat()}
+          style={styles.buttonNewChatContainer}
+        >
+          <Ionicons name="add-circle" size={22} color="white" />
+          <Text style={styles.buttonNewChatText}>New chat</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
-  buttonNewChat: {
-    fontSize: 22,
+  buttonNewChatText: {
+    fontSize: 15,
     textAlign: "center",
     fontWeight: "bold",
-    marginTop: 70,
-    marginBottom: 30,
-    padding: 10,
     color: "white",
+  },
+  buttonNewChatContainer: {
+    backgroundColor: "#6a29d3",
+    borderRadius: 30,
+    alignSelf: "center",
+    margin: 30,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+    width: 200,
+    padding: 10,
+    position: "absolute",
+    bottom: 10,
+    // iOS Shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 3, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+
+    // Android Shadow (elevation)
+    elevation: 5, // Works only on Android
   },
 });
