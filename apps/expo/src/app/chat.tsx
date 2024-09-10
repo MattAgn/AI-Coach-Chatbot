@@ -47,7 +47,7 @@ export default function Chat() {
   }
 
   return (
-    <SafeAreaView className="bg-background">
+    <SafeAreaView className="bg-background" edges={{ top: "off" }}>
       <Stack.Screen options={{ headerBackTitle: "Back", title: "Chat" }} />
       <Channel channel={channel}>
         <MessageList />
