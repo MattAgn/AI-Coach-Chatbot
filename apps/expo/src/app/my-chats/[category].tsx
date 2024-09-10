@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -26,7 +26,7 @@ export default function MyChats() {
 
   const startNewChat = async () => {
     try {
-      const channelId = `${category}-${data?.length ?? 0 + 1}`;
+      const channelId = `${category}-${(data?.length ?? 0) + 1}`;
       const channel = getChatClient().channel(category, channelId, {
         name: channelId,
       });
@@ -39,8 +39,11 @@ export default function MyChats() {
 
       await channel.create();
       await channel.addMembers([coachId, chatUserId]);
+      setChannel(channel);
+      router.navigate("/chat");
     } catch (error) {
       console.log(error);
+      Alert.alert("Error", "Failed to start a new chat");
     }
   };
 
