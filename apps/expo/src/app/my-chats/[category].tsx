@@ -22,7 +22,11 @@ export default function MyChats() {
     throw new Error("Category must be a string");
   }
 
-  const filter = { type: category, members: { $in: [chatUserId] } };
+  const filter = {
+    type: category,
+    members: { $in: [chatUserId] },
+    last_message_at: { $exists: true },
+  };
 
   const startNewChat = async () => {
     try {
