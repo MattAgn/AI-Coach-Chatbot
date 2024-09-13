@@ -45,17 +45,16 @@ export const chatbotRouter = {
           messages: { limit: 30 },
         });
 
-        if (
+        const shouldUpdateChatName =
           channel.data?.name === DEFAULT_CHAT_NAME ||
           channel.data?.name?.startsWith(
             getLegeacyChatNamePrefix(input.category),
-          )
-        ) {
-          const chatName = await queryLLM(
-            getChatNamePrompt(chatHistory.map((m) => m.text ?? "")),
           );
 
-          await channel.update({ name: chatName });
+        if (shouldUpdateChatName) {
+          const chatContext = chatHistory.map((message) => message.text ?? "");
+          const newChatName = await queryLLM(getChatNamePrompt(chatContext));
+          await channel.update({ name: newChatName });
         }
 
         const llmReply = await queryLLMWithHistory({
