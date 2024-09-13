@@ -2,9 +2,8 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { ChannelList } from "stream-chat-expo";
+import { ChannelList, generateRandomId } from "stream-chat-expo";
 
-import { useChannelsByCategory } from "~/api/useChannelsByCategory";
 import { chatUserId } from "~/chatConfig";
 import { Loader } from "~/components/Loader";
 import { getChatClient } from "~/utils/chatClient";
@@ -16,7 +15,6 @@ export default function MyChats() {
   const { setChannel } = useChat();
   const { category } = useLocalSearchParams();
   const { clientIsReady } = useChatClient();
-  const { data } = useChannelsByCategory(category as Category);
 
   if (typeof category !== "string") {
     throw new Error("Category must be a string");
@@ -30,9 +28,10 @@ export default function MyChats() {
 
   const startNewChat = async () => {
     try {
-      const channelId = `${category}-${(data?.length ?? 0) + 1}`;
+      const channelId = `${category}-${generateRandomId()}`;
+
       const channel = getChatClient().channel(category, channelId, {
-        name: channelId,
+        name: "NO_NAME",
       });
 
       const coachId = coachByCategory[category as Category];
@@ -40,7 +39,6 @@ export default function MyChats() {
       if (!coachId) {
         throw new Error("Coach not found");
       }
-
       await channel.create();
       await channel.addMembers([coachId, chatUserId]);
       setChannel(channel);
@@ -115,6 +113,6 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
 
     // Android Shadow (elevation)
-    elevation: 5, // Works only on Android
+    elevation: 5,
   },
 });
