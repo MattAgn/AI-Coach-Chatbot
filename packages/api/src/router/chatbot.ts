@@ -1,14 +1,10 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import OpenAI from "openai";
 import { StreamChat } from "stream-chat";
 import { z } from "zod";
 
 import { adaptStreamMessagesToGptMessages } from "../infra/adaptStreamMessagesToGptMessages";
+import { queryLLM, queryLLMWithHistory } from "../infra/queryLLM";
 import { publicProcedure } from "../trpc";
-
-const openAiClient = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 const STREAM_API_KEY = process.env.STREAM_API_KEY;
 const STREAM_SECRET = process.env.STREAM_SECRET;
@@ -55,48 +51,25 @@ export const chatbotRouter = {
             getLegeacyChatNamePrefix(input.category),
           )
         ) {
-          const chatNameCompletion = await openAiClient.chat.completions.create(
-            {
-              messages: [
-                {
-                  role: "system",
-                  content: getChatNamePrompt(
-                    chatHistory.map((message) => message.text ?? ""),
-                  ),
-                },
-              ],
-              model: "gpt-4o-mini",
-              temperature: 0.2,
-            },
+          const chatName = await queryLLM(
+            getChatNamePrompt(chatHistory.map((m) => m.text ?? "")),
           );
-
-          const chatName =
-            chatNameCompletion.choices[0]?.message.content ?? "NO_NAME";
 
           await channel.update({ name: chatName });
         }
 
-        const chatCompletion = await openAiClient.chat.completions.create({
-          messages: [
-            {
-              role: "system",
-              content: getCoachingPrompt(input.category),
-            },
-            ...adaptStreamMessagesToGptMessages(chatHistory),
-          ],
-          model: "gpt-4o-mini",
-          temperature: 0.2,
+        const llmReply = await queryLLMWithHistory({
+          systemMessage: getCoachingPrompt(input.category),
+          conversationHistory: adaptStreamMessagesToGptMessages(chatHistory),
         });
 
-        const message =
-          chatCompletion.choices[0]?.message.content ??
-          "Sorry i'm asleep right now, come back later";
-        const gptmessage = {
-          text: message,
+        const llmMessage = {
+          text: llmReply,
           user_id: coachByChannel[input.category],
         };
-        channel.sendMessage(gptmessage);
-        return { botResponse: message };
+        channel.sendMessage(llmMessage);
+
+        return;
       } catch (error) {
         console.error(error);
         throw new Error("Failed to get chat response");
