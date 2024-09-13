@@ -6,7 +6,7 @@ import { z } from "zod";
 import { adaptStreamMessagesToGptMessages } from "../infra/adaptStreamMessagesToGptMessages";
 import { publicProcedure } from "../trpc";
 
-const client = new OpenAI({
+const openAiClient = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
@@ -43,7 +43,7 @@ export const chatbotRouter = {
         messages: { limit: 30 },
       });
 
-      const chatCompletion = await client.chat.completions.create({
+      const chatCompletion = await openAiClient.chat.completions.create({
         messages: [
           {
             role: "system",
