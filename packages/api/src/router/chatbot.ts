@@ -42,7 +42,6 @@ export const chatbotRouter = {
       const { messages: chatHistory } = await channel.query({
         messages: { limit: 30 },
       });
-      console.log(chatHistory);
 
       const chatCompletion = await client.chat.completions.create({
         messages: [
@@ -64,7 +63,7 @@ export const chatbotRouter = {
         text: message,
         user_id: coachByChannel[input.category],
       };
-      channel.sendMessage(gptmessage);
+
       return { botResponse: message };
     }),
 } satisfies TRPCRouterRecord;
