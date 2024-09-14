@@ -1,11 +1,11 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { ChannelList, generateRandomId } from "stream-chat-expo";
 
 import { chatUserId } from "~/chatConfig";
 import { Loader } from "~/components/Loader";
+import { NewChatButton } from "~/components/NewChatButton";
 import { getChatClient } from "~/utils/chatClient";
 import { Category, coachByCategory } from "~/utils/coachByCategory";
 import { useChat } from "../ChatContext";
@@ -71,13 +71,7 @@ export default function MyChats() {
             router.navigate("/chat");
           }}
         />
-        <TouchableOpacity
-          onPress={() => startNewChat()}
-          style={styles.buttonNewChatContainer}
-        >
-          <Ionicons name="add-circle" size={22} color="white" />
-          <Text style={styles.buttonNewChatText}>New chat</Text>
-        </TouchableOpacity>
+        <NewChatButton onPress={() => startNewChat()} />
       </View>
     </SafeAreaView>
   );
