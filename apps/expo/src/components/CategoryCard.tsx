@@ -12,15 +12,17 @@ import Animated, {
 } from "react-native-reanimated";
 import { Link } from "expo-router";
 
+type CategoryCardProps = {
+  category: string;
+  imagePath: ImageSourcePropType;
+  index: number;
+};
+
 export const CategoryCard = ({
   category,
   imagePath,
   index,
-}: {
-  category: string;
-  imagePath: ImageSourcePropType;
-  index: number;
-}) => {
+}: CategoryCardProps) => {
   const animatedStyle = useFadeInCardStyle(index);
 
   return (
