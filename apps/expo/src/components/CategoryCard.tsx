@@ -50,14 +50,11 @@ const styles = StyleSheet.create({
     gap: 30,
     width: "100%",
     height: "27%",
-    // iOS Shadow
+    // iOS Shadow (on Android, elevation is used and is animated with useFadeInCardStyle)
     shadowColor: "#000",
     shadowOffset: { width: 3, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-
-    // Android Shadow (elevation)
-    elevation: 3,
   },
   channelName: {
     fontSize: 20,
@@ -72,16 +69,22 @@ const styles = StyleSheet.create({
 
 const useFadeInCardStyle = (index: number) => {
   const opacity = useSharedValue(0);
+  const elevation = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: withDelay(
       index * 400,
       withTiming(opacity.value, { duration: 1000 }),
     ),
+    elevation: withDelay(
+      index * 400,
+      withTiming(elevation.value, { duration: 1000 }),
+    ),
   }));
 
   useEffect(() => {
     opacity.value = 1;
+    elevation.value = 3;
   }, []);
 
   return animatedStyle;
