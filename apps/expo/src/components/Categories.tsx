@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Image,
   ImageSourcePropType,
@@ -5,6 +6,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from "react-native-reanimated";
 import { Link } from "expo-router";
 
 export const Categories = () => {
@@ -13,14 +20,17 @@ export const Categories = () => {
       <CategoryCard
         category="Sleep"
         imagePath={require("../../assets/Sleep.png")}
+        index={0}
       />
       <CategoryCard
         category="Sport"
         imagePath={require("../../assets/Sport.png")}
+        index={1}
       />
       <CategoryCard
         category="Nutrition"
         imagePath={require("../../assets/Nutrition.png")}
+        index={2}
       />
     </View>
   );
@@ -29,10 +39,14 @@ export const Categories = () => {
 const CategoryCard = ({
   category,
   imagePath,
+  index,
 }: {
   category: string;
   imagePath: ImageSourcePropType;
+  index: number;
 }) => {
+  const animatedStyle = useFadeInCardStyle(index);
+
   return (
     <Link
       href={{
@@ -42,7 +56,10 @@ const CategoryCard = ({
       asChild
     >
       <TouchableOpacity style={styles.card}>
-        <Image source={imagePath} style={styles.image} />
+        <Animated.Image
+          source={imagePath}
+          style={[styles.image, animatedStyle]}
+        />
       </TouchableOpacity>
     </Link>
   );
@@ -50,7 +67,7 @@ const CategoryCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#d9c2ff",
+    backgroundColor: "transparent",
     marginBottom: 20,
     borderRadius: 30,
     flexDirection: "row",
@@ -76,3 +93,20 @@ const styles = StyleSheet.create({
     height: "100%",
   },
 });
+
+const useFadeInCardStyle = (index: number) => {
+  const opacity = useSharedValue(0);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: withDelay(
+      index * 400,
+      withTiming(opacity.value, { duration: 1000 }),
+    ),
+  }));
+
+  useEffect(() => {
+    opacity.value = 1;
+  }, []);
+
+  return animatedStyle;
+};
