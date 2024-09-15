@@ -1,9 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import { Event } from "stream-chat";
 import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 
+import { AnimatedTypingTitle } from "~/components/AnimatedTypingTitle";
 import { api } from "~/utils/api";
 import { getChatClient } from "~/utils/chatClient";
 import { Category } from "~/utils/coachByCategory";
@@ -11,6 +13,7 @@ import { useChat } from "./ChatContext";
 
 export default function Chat() {
   const { channel } = useChat();
+  const [pageTitle, setPageTitle] = useState("Chat");
 
   const respondToMessage = api.chatbot.getChatGptResponse.useMutation();
 
@@ -29,7 +32,13 @@ export default function Chat() {
           return;
         }
 
-        respondToMessage.mutateAsync({ channelId, category });
+        const { newChatName } = await respondToMessage.mutateAsync({
+          channelId,
+          category,
+        });
+        if (newChatName) {
+          setPageTitle(newChatName);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -48,7 +57,12 @@ export default function Chat() {
 
   return (
     <SafeAreaView className="bg-background" edges={["left", "bottom", "right"]}>
-      <Stack.Screen options={{ headerBackTitle: "Back", title: "Chat" }} />
+      <Stack.Screen
+        options={{
+          headerBackTitle: "Back",
+          headerTitle: () => <AnimatedTypingTitle title={pageTitle} />,
+        }}
+      />
       <Channel channel={channel}>
         <MessageList />
         <MessageInput />
