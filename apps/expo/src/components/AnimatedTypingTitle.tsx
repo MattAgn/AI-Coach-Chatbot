@@ -26,6 +26,7 @@ export const AnimatedTypingTitle = ({ title }: { title: string }) => {
   useEffect(() => {
     let currentIndex = 0;
     bubbleOpacity.value = 1;
+    setDisplayedTitle("");
 
     const intervalId = setInterval(() => {
       if (currentIndex < title.length) {
