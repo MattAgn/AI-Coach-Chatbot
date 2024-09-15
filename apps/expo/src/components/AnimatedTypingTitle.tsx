@@ -13,6 +13,7 @@ const BUBBLE_SIZE = 15;
 
 export const AnimatedTypingTitle = ({ title }: { title: string }) => {
   const [displayedTitle, setDisplayedTitle] = useState("");
+  const [previousTitle, setPreviousTitle] = useState<string>(title);
   const bubbleScale = useSharedValue(1);
   const bubbleOpacity = useSharedValue(1);
 
@@ -24,6 +25,11 @@ export const AnimatedTypingTitle = ({ title }: { title: string }) => {
   });
 
   useEffect(() => {
+    if (title === previousTitle) {
+      setDisplayedTitle(title);
+      return;
+    }
+    setPreviousTitle(title);
     let currentIndex = 0;
     bubbleOpacity.value = 1;
     setDisplayedTitle("");
