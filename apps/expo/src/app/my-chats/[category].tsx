@@ -42,7 +42,7 @@ export default function MyChats() {
       await channel.create();
       await channel.addMembers([coachId, chatUserId]);
       setChannel(channel);
-      router.navigate("/chat");
+      router.navigate("/chat/Chat");
     } catch (error) {
       console.log(error);
       Alert.alert("Error", "Failed to start a new chat");
@@ -68,7 +68,11 @@ export default function MyChats() {
           LoadingIndicator={Loader}
           onSelect={(channel) => {
             setChannel(channel);
-            router.navigate("/chat");
+            const chatName = channel.data?.name ?? "Chat";
+            router.navigate({
+              pathname: "/chat/[name]",
+              params: { name: chatName },
+            });
           }}
         />
         <NewChatButton onPress={() => startNewChat()} />

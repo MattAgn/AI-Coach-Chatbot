@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import Animated from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { Event } from "stream-chat";
 import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 
@@ -9,11 +8,13 @@ import { AnimatedTypingTitle } from "~/components/AnimatedTypingTitle";
 import { api } from "~/utils/api";
 import { getChatClient } from "~/utils/chatClient";
 import { Category } from "~/utils/coachByCategory";
-import { useChat } from "./ChatContext";
+import { useChat } from "../ChatContext";
 
 export default function Chat() {
+  const { name: chatName } = useLocalSearchParams();
   const { channel } = useChat();
-  const [pageTitle, setPageTitle] = useState("Chat");
+  const defaultChatName = typeof chatName === "string" ? chatName : "Chat";
+  const [pageTitle, setPageTitle] = useState(defaultChatName);
 
   const respondToMessage = api.chatbot.getChatGptResponse.useMutation();
 
