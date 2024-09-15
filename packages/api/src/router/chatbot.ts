@@ -30,6 +30,7 @@ export const chatbotRouter = {
     )
     .mutation(async ({ input }) => {
       try {
+        let newChatName: string | undefined;
         if (!STREAM_API_KEY || !STREAM_SECRET) {
           throw new Error("STREAM_API_KEY and STREAM_SECRET are required");
         }
@@ -53,7 +54,7 @@ export const chatbotRouter = {
 
         if (shouldUpdateChatName) {
           const chatContext = chatHistory.map((message) => message.text ?? "");
-          const newChatName = await queryLLM(getChatNamePrompt(chatContext));
+          newChatName = await queryLLM(getChatNamePrompt(chatContext));
           await channel.update({ name: newChatName });
         }
 
@@ -68,7 +69,7 @@ export const chatbotRouter = {
         };
         channel.sendMessage(llmMessage);
 
-        return;
+        return { newChatName: channel.data?.name };
       } catch (error) {
         console.error(error);
         throw new Error("Failed to get chat response");
