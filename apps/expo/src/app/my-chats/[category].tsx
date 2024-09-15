@@ -1,6 +1,7 @@
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
+import { Channel } from "stream-chat";
 import { ChannelList, generateRandomId } from "stream-chat-expo";
 
 import { chatUserId } from "~/chatConfig";
@@ -49,6 +50,15 @@ export default function MyChats() {
     }
   };
 
+  const handleChannelSelect = (channel: Channel) => {
+    setChannel(channel);
+    const chatName = channel.data?.name ?? "Chat";
+    router.navigate({
+      pathname: "/chat/[name]",
+      params: { name: chatName },
+    });
+  };
+
   if (!clientIsReady) {
     return <Loader />;
   }
@@ -66,14 +76,7 @@ export default function MyChats() {
           filters={filter}
           ListHeaderComponent={() => null}
           LoadingIndicator={Loader}
-          onSelect={(channel) => {
-            setChannel(channel);
-            const chatName = channel.data?.name ?? "Chat";
-            router.navigate({
-              pathname: "/chat/[name]",
-              params: { name: chatName },
-            });
-          }}
+          onSelect={handleChannelSelect}
         />
         <NewChatButton onPress={() => startNewChat()} />
       </View>
