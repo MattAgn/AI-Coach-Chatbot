@@ -33,7 +33,7 @@ export default function MyChats() {
       const channelId = `${category}-${generateRandomId()}`;
 
       const channel = getChatClient().channel(category, channelId, {
-        name: "NO_NAME",
+        name: DEFAULT_CHAT_NAME,
       });
 
       const coachId = coachByCategory[category as Category];
