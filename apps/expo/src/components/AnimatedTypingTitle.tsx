@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -8,7 +8,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-const TYPING_SPEED = 200;
+const TYPING_SPEED = 120;
 const BUBBLE_SIZE = 15;
 
 export const AnimatedTypingTitle = ({ title }: { title: string }) => {
@@ -39,12 +39,12 @@ export const AnimatedTypingTitle = ({ title }: { title: string }) => {
     }, TYPING_SPEED);
 
     bubbleScale.value = withRepeat(
-      withTiming(1.1, { duration: 700, easing: Easing.inOut(Easing.ease) }),
+      withTiming(1.3, { duration: 700, easing: Easing.inOut(Easing.ease) }),
       -1,
       true,
     );
     bubbleOpacity.value = withRepeat(
-      withTiming(0.6, { duration: 700, easing: Easing.inOut(Easing.ease) }), // Opacité réduite à 0.6
+      withTiming(0.3, { duration: 700, easing: Easing.inOut(Easing.ease) }), // Opacité réduite à 0.6
       -1,
       true,
     );
