@@ -88,7 +88,7 @@ Unless asked otherwise, don't reply with more than 6 sentences
 
 const getChatNamePrompt = (messages: string[]) => `
   Based on the following messages that are part of a coaching chat, 
-  propose a short name for the chat (no more that 6 words) in the same language as the messages.
+  propose a short name for the chat (no more that 4 words) in the same language as the messages.
   The name should be the main topic of the chat.
   It should not contain the word chat as it is already implied.
   Reply with ONLY the name of the chat, nothing else
