@@ -8,12 +8,13 @@ import { AnimatedTypingTitle } from "~/components/AnimatedTypingTitle";
 import { api } from "~/utils/api";
 import { getChatClient } from "~/utils/chatClient";
 import { Category } from "~/utils/coachByCategory";
+import { DEFAULT_CHAT_NAME } from "~/utils/defaultChatTitle";
 import { useChat } from "../ChatContext";
 
 export default function Chat() {
-  const { name: chatName } = useLocalSearchParams();
+  const { name } = useLocalSearchParams();
   const { channel } = useChat();
-  const defaultChatName = typeof chatName === "string" ? chatName : "Chat";
+  const defaultChatName = typeof name === "string" ? name : DEFAULT_CHAT_NAME;
   const [pageTitle, setPageTitle] = useState(defaultChatName);
 
   const respondToMessage = api.chatbot.getChatGptResponse.useMutation();

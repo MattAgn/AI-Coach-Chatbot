@@ -20,7 +20,7 @@ const coachByChannel: Record<Category, string> = {
   [Category.Nutrition]: "nutrition-ai-coach",
   [Category.Sport]: "sport-ai-coach",
 };
-const DEFAULT_CHAT_NAME = "NO_NAME";
+const DEFAULT_CHAT_NAME = "Chat";
 const getLegeacyChatNamePrefix = (category: Category) => `${category}-`;
 
 export const chatbotRouter = {

@@ -9,6 +9,7 @@ import { Loader } from "~/components/Loader";
 import { NewChatButton } from "~/components/NewChatButton";
 import { getChatClient } from "~/utils/chatClient";
 import { Category, coachByCategory } from "~/utils/coachByCategory";
+import { DEFAULT_CHAT_NAME } from "~/utils/defaultChatTitle";
 import { useChat } from "../ChatContext";
 import { useChatClient } from "../useChatClient";
 
@@ -43,7 +44,10 @@ export default function MyChats() {
       await channel.create();
       await channel.addMembers([coachId, chatUserId]);
       setChannel(channel);
-      router.navigate("/chat/Chat");
+      router.navigate({
+        pathname: "/chat/[name]",
+        params: { name: DEFAULT_CHAT_NAME },
+      });
     } catch (error) {
       console.log(error);
       Alert.alert("Error", "Failed to start a new chat");
@@ -52,7 +56,7 @@ export default function MyChats() {
 
   const handleChannelSelect = (channel: Channel) => {
     setChannel(channel);
-    const chatName = channel.data?.name ?? "Chat";
+    const chatName = channel.data?.name ?? DEFAULT_CHAT_NAME;
     router.navigate({
       pathname: "/chat/[name]",
       params: { name: chatName },
