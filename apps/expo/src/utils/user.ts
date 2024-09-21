@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { MMKV } from "react-native-mmkv";
 import { generateRandomId } from "stream-chat-expo";
 
-const storage = new MMKV();
+import { storage } from "./storage";
 
 export const useUser = () => {
   const [userId, setUserId] = useState<string | null>(null);
