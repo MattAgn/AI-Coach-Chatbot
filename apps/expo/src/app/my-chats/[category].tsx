@@ -4,12 +4,12 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { Channel } from "stream-chat";
 import { ChannelList, generateRandomId } from "stream-chat-expo";
 
-import { chatUserId } from "~/chatConfig";
 import { Loader } from "~/components/Loader";
 import { NewChatButton } from "~/components/NewChatButton";
 import { getChatClient } from "~/utils/chatClient";
 import { Category, coachByCategory } from "~/utils/coachByCategory";
 import { DEFAULT_CHAT_NAME } from "~/utils/defaultChatTitle";
+import { useUser } from "~/utils/user";
 import { useChat } from "../ChatContext";
 import { useChatClient } from "../useChatClient";
 
@@ -17,6 +17,7 @@ export default function MyChats() {
   const { setChannel } = useChat();
   const { category } = useLocalSearchParams();
   const { clientIsReady } = useChatClient();
+  const { userId } = useUser();
 
   if (typeof category !== "string") {
     throw new Error("Category must be a string");
@@ -24,7 +25,7 @@ export default function MyChats() {
 
   const filter = {
     type: category,
-    members: { $in: [chatUserId] },
+    members: { $in: [userId] },
     last_message_at: { $exists: true },
   };
 
@@ -41,8 +42,11 @@ export default function MyChats() {
       if (!coachId) {
         throw new Error("Coach not found");
       }
+      if (!userId) {
+        throw new Error("User not found");
+      }
       await channel.create();
-      await channel.addMembers([coachId, chatUserId]);
+      await channel.addMembers([coachId, userId]);
       setChannel(channel);
       router.navigate({
         pathname: "/chat/[name]",

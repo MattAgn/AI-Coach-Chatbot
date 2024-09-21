@@ -4,8 +4,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 
 import { Categories } from "~/components/Categories";
+import { useUser } from "~/utils/user";
 
 export default function Index() {
+  const { userId } = useUser();
+
   return (
     <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.container}>
       <SafeAreaView>
