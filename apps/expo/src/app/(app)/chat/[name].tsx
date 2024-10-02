@@ -1,15 +1,15 @@
+import type { Event } from "stream-chat";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Event } from "stream-chat";
 import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 
+import type { Category } from "~/utils/coachByCategory";
 import { AnimatedTypingTitle } from "~/components/AnimatedTypingTitle";
 import { api } from "~/utils/api";
 import { getChatClient } from "~/utils/chatClient";
-import { Category } from "~/utils/coachByCategory";
 import { DEFAULT_CHAT_NAME } from "~/utils/defaultChatTitle";
-import { useChat } from "../ChatContext";
+import { useChat } from "../../ChatContext";
 
 export default function Chat() {
   const { name } = useLocalSearchParams();
@@ -22,8 +22,8 @@ export default function Chat() {
   useEffect(() => {
     const handleNewMessage = async (event: Event) => {
       try {
-        const userRole = event?.message?.user?.role;
-        const channelId = event.channel_id as string;
+        const userRole = event.message?.user?.role;
+        const channelId = event.channel_id!;
         const category = event.channel_type as Category;
 
         if (

@@ -1,26 +1,31 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import type { Channel } from "stream-chat";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { Channel } from "stream-chat";
 import { ChannelList, generateRandomId } from "stream-chat-expo";
 
+import type { Category } from "~/utils/coachByCategory";
 import { Loader } from "~/components/Loader";
 import { NewChatButton } from "~/components/NewChatButton";
 import { getChatClient } from "~/utils/chatClient";
-import { Category, coachByCategory } from "~/utils/coachByCategory";
+import { coachByCategory } from "~/utils/coachByCategory";
 import { DEFAULT_CHAT_NAME } from "~/utils/defaultChatTitle";
-import { useUser } from "~/utils/user";
-import { useChat } from "../ChatContext";
-import { useChatClient } from "../useChatClient";
+import { getUserId } from "~/utils/User";
+import { useChat } from "../../ChatContext";
 
 export default function MyChats() {
-  const { setChannel } = useChat();
+  const { setChannel, clientIsReady } = useChat();
   const { category } = useLocalSearchParams();
-  const { clientIsReady } = useChatClient();
-  const { userId } = useUser();
+  const userId = getUserId();
+  console.log({ userId });
+  console.log({ category });
+  console.log({ clientIsReady });
 
   if (typeof category !== "string") {
     throw new Error("Category must be a string");
+  }
+  if (!userId) {
+    throw new Error("User not found");
   }
 
   const filter = {

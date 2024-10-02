@@ -2,17 +2,14 @@ import "@bacons/text-decoder/install";
 
 import type { DeepPartial, Theme } from "stream-chat-expo";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { StreamChat } from "stream-chat";
 import { Chat, OverlayProvider } from "stream-chat-expo";
 
 import { TRPCProvider } from "~/utils/api";
 import { chatApiKey } from "../chatConfig";
 import { ChatProvider } from "./ChatContext";
-
-import "../styles.css";
-
-import { StreamChat } from "stream-chat";
 
 const theme: DeepPartial<Theme> = {
   channelListMessenger: {
@@ -34,7 +31,7 @@ export default function RootLayout() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <OverlayProvider value={{ style: theme }}>
             <Chat client={chatClient}>
-              <Stack />
+              <Slot />
               <StatusBar />
             </Chat>
           </OverlayProvider>
