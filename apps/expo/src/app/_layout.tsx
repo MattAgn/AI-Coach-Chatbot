@@ -8,6 +8,7 @@ import { StreamChat } from "stream-chat";
 import { Chat, OverlayProvider } from "stream-chat-expo";
 
 import { TRPCProvider } from "~/utils/api";
+import { UserProvider } from "~/view/contexts/UserContext";
 import { chatApiKey } from "../chatConfig";
 import { ChatProvider } from "../view/contexts/ChatContext";
 
@@ -27,16 +28,18 @@ const chatClient = StreamChat.getInstance(chatApiKey);
 export default function RootLayout() {
   return (
     <TRPCProvider>
-      <ChatProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <OverlayProvider value={{ style: theme }}>
-            <Chat client={chatClient}>
-              <Slot />
-              <StatusBar />
-            </Chat>
-          </OverlayProvider>
-        </GestureHandlerRootView>
-      </ChatProvider>
+      <UserProvider>
+        <ChatProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <OverlayProvider value={{ style: theme }}>
+              <Chat client={chatClient}>
+                <Slot />
+                <StatusBar />
+              </Chat>
+            </OverlayProvider>
+          </GestureHandlerRootView>
+        </ChatProvider>
+      </UserProvider>
     </TRPCProvider>
   );
 }

@@ -6,13 +6,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 
 import { getChatClient } from "~/utils/chatClient";
-import { getUserName, signOut } from "~/utils/User";
 import { Categories } from "~/view/components/Categories";
+import { useUser } from "~/view/contexts/UserContext";
 import { useChat } from "../../view/contexts/ChatContext";
 
 export default function Index() {
   const { setupClient } = useChat();
-  const userName = getUserName();
+  const { userName, signOut } = useUser();
 
   const resetUser = () => {
     signOut();

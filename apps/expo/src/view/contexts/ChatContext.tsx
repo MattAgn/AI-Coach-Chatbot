@@ -3,7 +3,7 @@ import type { Channel } from "stream-chat";
 import React, { useState } from "react";
 
 import { getChatClient } from "~/utils/chatClient";
-import { getUserId, getUserName } from "~/utils/User";
+import { useUser } from "./UserContext";
 
 interface ChatContextType {
   channel: Channel | null;
@@ -36,13 +36,13 @@ interface ChatProviderProps {
 export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [channel, setChannel] = useState<Channel | null>(null);
   const [thread, setThread] = useState<string | null>(null);
+  const { userName, userId } = useUser();
 
   const [clientIsReady, setClientIsReady] = useState(false);
 
   const setupClient = async () => {
-    const userId = getUserId();
-    const userName = getUserName();
     if (!userId || !userName) {
+      console.error("User not found");
       return;
     }
 

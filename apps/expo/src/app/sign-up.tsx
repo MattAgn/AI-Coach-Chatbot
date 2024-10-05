@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 
-import { signUp } from "~/utils/User";
+import { useUser } from "~/view/contexts/UserContext";
 import { useChat } from "../view/contexts/ChatContext";
 
 const ANIMATION_DURATION = 700;
@@ -19,6 +19,7 @@ const ANIMATION_DURATION = 700;
 export default function SignUp() {
   const [name, setName] = useState("");
   const { setupClient } = useChat();
+  const { signUp } = useUser();
 
   const { opacity, animatedStyle } = useCardAnimatedStyle();
 

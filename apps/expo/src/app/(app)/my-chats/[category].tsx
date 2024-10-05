@@ -8,15 +8,15 @@ import type { Category } from "~/utils/coachByCategory";
 import { getChatClient } from "~/utils/chatClient";
 import { coachByCategory } from "~/utils/coachByCategory";
 import { DEFAULT_CHAT_NAME } from "~/utils/defaultChatTitle";
-import { getUserId } from "~/utils/User";
 import { Loader } from "~/view/components/Loader";
 import { NewChatButton } from "~/view/components/NewChatButton";
+import { useUser } from "~/view/contexts/UserContext";
 import { useChat } from "../../../view/contexts/ChatContext";
 
 export default function MyChats() {
   const { setChannel, clientIsReady } = useChat();
   const { category } = useLocalSearchParams();
-  const userId = getUserId();
+  const { userId } = useUser();
 
   if (typeof category !== "string") {
     throw new Error("Category must be a string");
