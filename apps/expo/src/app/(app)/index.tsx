@@ -17,12 +17,7 @@ export default function Index() {
 
   const resetUser = () => {
     signOut();
-    getChatClient()
-      .disconnectUser()
-      .then(() => {
-        router.replace("/sign-up");
-      })
-      .catch((e) => console.error("Failed disconnecting user", e));
+    getChatClient().disconnectUser();
   };
 
   useEffect(() => {
