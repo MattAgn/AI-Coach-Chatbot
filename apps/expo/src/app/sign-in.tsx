@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, TextInput } from "react-native";
 import Animated, {
   Easing,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -13,34 +14,13 @@ import { router, Stack } from "expo-router";
 import { signIn } from "~/utils/User";
 import { useChat } from "./ChatContext";
 
+const ANIMATION_DURATION = 700;
+
 export default function SignIn() {
   const [name, setName] = useState("");
   const { setupClient } = useChat();
 
-  const opacity = useSharedValue(0);
-  const scale = useSharedValue(0.2);
-
-  useEffect(() => {
-    console.log(name);
-  });
-
-  useEffect(() => {
-    opacity.value = withTiming(1, {
-      duration: 800,
-      easing: Easing.out(Easing.ease),
-    });
-    scale.value = withTiming(1, {
-      duration: 800,
-      easing: Easing.out(Easing.ease),
-    });
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: opacity.value,
-      transform: [{ scale: scale.value }],
-    };
-  });
+  const { opacity, animatedStyle } = useCardAnimatedStyle();
 
   const handleSubmit = () => {
     if (name) {
@@ -48,9 +28,18 @@ export default function SignIn() {
       signIn(name);
       setupClient()
         .then(() => {
-          router.replace("/");
+          opacity.value = withTiming(
+            0,
+            {
+              duration: ANIMATION_DURATION,
+              easing: Easing.in(Easing.ease),
+            },
+            () => {
+              runOnJS(router.replace)("/");
+            },
+          );
         })
-        .catch((e) => console.log("Failed to setup client", e));
+        .catch((e) => console.error("Failed to setup client", e));
     }
   };
 
@@ -119,3 +108,28 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
+
+function useCardAnimatedStyle() {
+  const opacity = useSharedValue(0);
+  const scale = useSharedValue(0.2);
+
+  useEffect(() => {
+    opacity.value = withTiming(1, {
+      duration: ANIMATION_DURATION,
+      easing: Easing.out(Easing.ease),
+    });
+    scale.value = withTiming(1, {
+      duration: ANIMATION_DURATION,
+      easing: Easing.out(Easing.ease),
+    });
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  return { opacity, scale, animatedStyle };
+}
