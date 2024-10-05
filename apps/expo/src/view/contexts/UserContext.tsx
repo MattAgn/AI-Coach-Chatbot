@@ -23,7 +23,6 @@ export const UserProvider = ({ children }: PropsWithChildren<{}>) => {
   const [userName, setUserName] = useState<string | null>(null);
 
   const signUp = (name: string) => {
-    console.log("sign in");
     const newId = generateRandomId();
     storage.set("userId", newId);
     storage.set("userName", name);

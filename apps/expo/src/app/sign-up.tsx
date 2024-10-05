@@ -25,7 +25,6 @@ export default function SignUp() {
 
   const handleSubmit = () => {
     if (name) {
-      console.log("wesh");
       signUp(name);
       setupClient()
         .then(() => {
