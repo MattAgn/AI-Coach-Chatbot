@@ -43,7 +43,7 @@ export default function SignUp() {
         <Stack.Screen
           options={{
             header: () => null,
-            title: "Sign in",
+            title: "Sign up",
           }}
         />
         <Animated.View style={[styles.card, animatedStyle]}>
