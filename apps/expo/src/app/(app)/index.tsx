@@ -3,11 +3,11 @@ import { StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 
 import { getChatClient } from "~/utils/chatClient";
 import { Categories } from "~/view/components/Categories";
+import { GradientBackground } from "~/view/components/GradientBackground";
 import { useUser } from "~/view/contexts/UserContext";
 import { useChat } from "../../view/contexts/ChatContext";
 
@@ -25,8 +25,8 @@ export default function Index() {
   }, []);
 
   return (
-    <LinearGradient colors={["#667eea", "#764ba2"]} style={styles.container}>
-      <SafeAreaView>
+    <GradientBackground>
+      <SafeAreaView style={styles.container}>
         <Stack.Screen
           options={{
             header: () => null,
@@ -42,7 +42,7 @@ export default function Index() {
           <Categories />
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </GradientBackground>
   );
 }
 

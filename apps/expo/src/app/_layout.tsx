@@ -2,12 +2,14 @@ import "@bacons/text-decoder/install";
 
 import type { DeepPartial, Theme } from "stream-chat-expo";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { LinearGradient } from "expo-linear-gradient";
 import { Slot } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { StreamChat } from "stream-chat";
 import { Chat, OverlayProvider } from "stream-chat-expo";
 
 import { TRPCProvider } from "~/utils/api";
+import { GradientBackground } from "~/view/components/GradientBackground";
 import { UserProvider } from "~/view/contexts/UserContext";
 import { chatApiKey } from "../chatConfig";
 import { ChatProvider } from "../view/contexts/ChatContext";
@@ -32,10 +34,12 @@ export default function RootLayout() {
         <ChatProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
             <OverlayProvider value={{ style: theme }}>
-              <Chat client={chatClient}>
-                <Slot />
-                <StatusBar />
-              </Chat>
+              <GradientBackground>
+                <Chat client={chatClient}>
+                  <Slot />
+                  <StatusBar />
+                </Chat>
+              </GradientBackground>
             </OverlayProvider>
           </GestureHandlerRootView>
         </ChatProvider>

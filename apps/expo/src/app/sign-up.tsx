@@ -8,9 +8,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 
+import { GradientBackground } from "~/view/components/GradientBackground";
 import { useUser } from "~/view/contexts/UserContext";
 
 const ANIMATION_DURATION = 700;
@@ -38,7 +38,7 @@ export default function SignUp() {
   };
 
   return (
-    <LinearGradient colors={["#667eea", "#764ba2"]} style={{ flex: 1 }}>
+    <GradientBackground>
       <SafeAreaView style={styles.container}>
         <Stack.Screen
           options={{
@@ -58,7 +58,7 @@ export default function SignUp() {
           <Button title="Submit" onPress={handleSubmit} />
         </Animated.View>
       </SafeAreaView>
-    </LinearGradient>
+    </GradientBackground>
   );
 }
 
