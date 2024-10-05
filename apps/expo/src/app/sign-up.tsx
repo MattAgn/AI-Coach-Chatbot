@@ -12,13 +12,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 
 import { useUser } from "~/view/contexts/UserContext";
-import { useChat } from "../view/contexts/ChatContext";
 
 const ANIMATION_DURATION = 700;
 
 export default function SignUp() {
   const [name, setName] = useState("");
-  const { setupClient } = useChat();
   const { signUp } = useUser();
 
   const { opacity, animatedStyle } = useCardAnimatedStyle();
@@ -26,20 +24,16 @@ export default function SignUp() {
   const handleSubmit = () => {
     if (name) {
       signUp(name);
-      setupClient()
-        .then(() => {
-          opacity.value = withTiming(
-            0,
-            {
-              duration: ANIMATION_DURATION,
-              easing: Easing.in(Easing.ease),
-            },
-            () => {
-              runOnJS(router.replace)("/");
-            },
-          );
-        })
-        .catch((e) => console.error("Failed to setup client", e));
+      opacity.value = withTiming(
+        0,
+        {
+          duration: ANIMATION_DURATION,
+          easing: Easing.in(Easing.ease),
+        },
+        () => {
+          runOnJS(router.replace)("/");
+        },
+      );
     }
   };
 
