@@ -6,7 +6,7 @@ export default function AppLayout() {
   const isLoggedIn = getUserId() !== undefined && getUserName() !== undefined;
 
   if (!isLoggedIn) {
-    return <Redirect href="/sign-in" />;
+    return <Redirect href="/sign-up" />;
   }
 
   return <Stack />;

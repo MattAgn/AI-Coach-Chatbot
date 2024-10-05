@@ -11,12 +11,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 
-import { signIn } from "~/utils/User";
+import { signUp } from "~/utils/User";
 import { useChat } from "./ChatContext";
 
 const ANIMATION_DURATION = 700;
 
-export default function SignIn() {
+export default function SignUp() {
   const [name, setName] = useState("");
   const { setupClient } = useChat();
 
@@ -25,7 +25,7 @@ export default function SignIn() {
   const handleSubmit = () => {
     if (name) {
       console.log("wesh");
-      signIn(name);
+      signUp(name);
       setupClient()
         .then(() => {
           opacity.value = withTiming(

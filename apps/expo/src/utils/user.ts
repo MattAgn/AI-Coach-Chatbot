@@ -2,7 +2,7 @@ import { generateRandomId } from "stream-chat-expo";
 
 import { storage } from "./storage";
 
-export const signIn = (name: string) => {
+export const signUp = (name: string) => {
   console.log("sign in");
   const newId = generateRandomId();
   storage.set("userId", newId);

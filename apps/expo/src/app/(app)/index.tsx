@@ -19,7 +19,7 @@ export default function Index() {
     getChatClient()
       .disconnectUser()
       .then(() => {
-        router.replace("/sign-in");
+        router.replace("/sign-up");
       })
       .catch((e) => console.error("Failed disconnecting user", e));
   };
