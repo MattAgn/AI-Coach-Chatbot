@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
@@ -39,7 +40,9 @@ export default function Index() {
         />
         <View className="h-full w-full p-4">
           <TouchableOpacity onLongPress={resetUser}>
-            <Text style={styles.title}>Hello {userName}</Text>
+            <Animated.Text entering={FadeIn.duration(800)} style={styles.title}>
+              Hello {userName}
+            </Animated.Text>
           </TouchableOpacity>
           <Categories />
         </View>
