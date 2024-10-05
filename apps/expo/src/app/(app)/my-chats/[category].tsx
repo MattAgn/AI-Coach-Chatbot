@@ -1,5 +1,5 @@
 import type { Channel } from "stream-chat";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { ChannelList, generateRandomId } from "stream-chat-expo";
@@ -17,9 +17,6 @@ export default function MyChats() {
   const { setChannel, clientIsReady } = useChat();
   const { category } = useLocalSearchParams();
   const userId = getUserId();
-  console.log({ userId });
-  console.log({ category });
-  console.log({ clientIsReady });
 
   if (typeof category !== "string") {
     throw new Error("Category must be a string");
@@ -31,7 +28,6 @@ export default function MyChats() {
   const filter = {
     type: category,
     members: { $in: [userId] },
-    last_message_at: { $exists: true },
   };
 
   const startNewChat = async () => {
@@ -84,15 +80,13 @@ export default function MyChats() {
           headerBackTitleVisible: false,
         }}
       />
-      <View className="h-full w-full">
-        <ChannelList
-          filters={filter}
-          ListHeaderComponent={() => null}
-          LoadingIndicator={Loader}
-          onSelect={handleChannelSelect}
-        />
-        <NewChatButton onPress={() => startNewChat()} />
-      </View>
+      <ChannelList
+        filters={filter}
+        ListHeaderComponent={() => null}
+        LoadingIndicator={Loader}
+        onSelect={handleChannelSelect}
+      />
+      <NewChatButton onPress={() => startNewChat()} />
     </SafeAreaView>
   );
 }
@@ -101,32 +95,5 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-  },
-  buttonNewChatText: {
-    fontSize: 15,
-    textAlign: "center",
-    fontWeight: "bold",
-    color: "white",
-  },
-  buttonNewChatContainer: {
-    backgroundColor: "#6a29d3",
-    borderRadius: 30,
-    alignSelf: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 10,
-    width: 200,
-    padding: 10,
-    position: "absolute",
-    bottom: 20,
-    // iOS Shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 3, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 10,
-
-    // Android Shadow (elevation)
-    elevation: 5,
   },
 });
