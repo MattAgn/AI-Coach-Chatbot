@@ -5,10 +5,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 
-import { Categories } from "~/components/Categories";
 import { getChatClient } from "~/utils/chatClient";
 import { getUserName, signOut } from "~/utils/User";
-import { useChat } from "../ChatContext";
+import { Categories } from "~/view/components/Categories";
+import { useChat } from "../../view/contexts/ChatContext";
 
 export default function Index() {
   const { setupClient } = useChat();

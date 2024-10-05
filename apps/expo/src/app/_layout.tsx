@@ -9,7 +9,7 @@ import { Chat, OverlayProvider } from "stream-chat-expo";
 
 import { TRPCProvider } from "~/utils/api";
 import { chatApiKey } from "../chatConfig";
-import { ChatProvider } from "./ChatContext";
+import { ChatProvider } from "../view/contexts/ChatContext";
 
 const theme: DeepPartial<Theme> = {
   channelListMessenger: {

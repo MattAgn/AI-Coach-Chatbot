@@ -5,13 +5,13 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { ChannelList, generateRandomId } from "stream-chat-expo";
 
 import type { Category } from "~/utils/coachByCategory";
-import { Loader } from "~/components/Loader";
-import { NewChatButton } from "~/components/NewChatButton";
 import { getChatClient } from "~/utils/chatClient";
 import { coachByCategory } from "~/utils/coachByCategory";
 import { DEFAULT_CHAT_NAME } from "~/utils/defaultChatTitle";
 import { getUserId } from "~/utils/User";
-import { useChat } from "../../ChatContext";
+import { Loader } from "~/view/components/Loader";
+import { NewChatButton } from "~/view/components/NewChatButton";
+import { useChat } from "../../../view/contexts/ChatContext";
 
 export default function MyChats() {
   const { setChannel, clientIsReady } = useChat();

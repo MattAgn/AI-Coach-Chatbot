@@ -5,11 +5,11 @@ import { Stack, useLocalSearchParams } from "expo-router";
 import { Channel, MessageInput, MessageList } from "stream-chat-expo";
 
 import type { Category } from "~/utils/coachByCategory";
-import { AnimatedTypingTitle } from "~/components/AnimatedTypingTitle";
 import { api } from "~/utils/api";
 import { getChatClient } from "~/utils/chatClient";
 import { DEFAULT_CHAT_NAME } from "~/utils/defaultChatTitle";
-import { useChat } from "../../ChatContext";
+import { AnimatedTypingTitle } from "~/view/components/AnimatedTypingTitle";
+import { useChat } from "../../../view/contexts/ChatContext";
 
 export default function Chat() {
   const { name } = useLocalSearchParams();

@@ -7,17 +7,17 @@ export const Categories = () => {
     <View>
       <CategoryCard
         category="Sleep"
-        imagePath={require("../../assets/Sleep.png")}
+        imagePath={require("../../../assets/Sleep.png")}
         index={0}
       />
       <CategoryCard
         category="Sport"
-        imagePath={require("../../assets/Sport.png")}
+        imagePath={require("../../../assets/Sport.png")}
         index={1}
       />
       <CategoryCard
         category="Nutrition"
-        imagePath={require("../../assets/Nutrition.png")}
+        imagePath={require("../../../assets/Nutrition.png")}
         index={2}
       />
     </View>

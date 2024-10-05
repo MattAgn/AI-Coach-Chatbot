@@ -12,7 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router, Stack } from "expo-router";
 
 import { signUp } from "~/utils/User";
-import { useChat } from "./ChatContext";
+import { useChat } from "../view/contexts/ChatContext";
 
 const ANIMATION_DURATION = 700;
 
