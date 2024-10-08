@@ -57,3 +57,15 @@ export const queryLLMWithHistory = async ({
   }
   return reply;
 };
+
+export const queryLLMForSound = async (text: string) => {
+  const mp3 = await openAiClient.audio.speech.create({
+    model: "tts-1",
+    input: text,
+    voice: "nova",
+    speed: 0.85,
+  });
+  const buffer = Buffer.from(await mp3.arrayBuffer());
+
+  return buffer;
+};

@@ -3,7 +3,11 @@ import { StreamChat } from "stream-chat";
 import { z } from "zod";
 
 import { adaptStreamMessagesToGptMessages } from "../infra/adaptStreamMessagesToGptMessages";
-import { queryLLM, queryLLMWithHistory } from "../infra/queryLLM";
+import {
+  queryLLM,
+  queryLLMForSound,
+  queryLLMWithHistory,
+} from "../infra/queryLLM";
 import { publicProcedure } from "../trpc";
 
 const STREAM_API_KEY = process.env.STREAM_API_KEY;
@@ -21,6 +25,7 @@ const coachByChannel: Record<Category, string> = {
   [Category.Sport]: "sport-ai-coach",
 };
 const DEFAULT_CHAT_NAME = "Chat";
+const AUDIO_MESSAGE_PREFIX = "[AUDIO MESSAGE]";
 const getLegeacyChatNamePrefix = (category: Category) => `${category}-`;
 
 export const chatbotRouter = {
@@ -63,12 +68,42 @@ export const chatbotRouter = {
           conversationHistory: adaptStreamMessagesToGptMessages(chatHistory),
         });
 
-        const llmMessage = {
-          text: llmReply,
-          user_id: coachByChannel[input.category],
-        };
-        channel.sendMessage(llmMessage);
+        if (llmReply.startsWith(AUDIO_MESSAGE_PREFIX)) {
+          channel
+            .sendMessage({
+              user_id: coachByChannel[input.category],
+              text: "C'est noté, je prépare la méditation",
+            })
+            .catch(console.error);
+          const audioBuffer = await queryLLMForSound(
+            llmReply.replace(AUDIO_MESSAGE_PREFIX, ""),
+          );
 
+          const fileSentResponse = await channel.sendFile(
+            audioBuffer,
+            "sleep.mp3",
+            "audio/mpeg",
+            {
+              id: coachByChannel[input.category],
+            },
+          );
+          await channel.sendMessage({
+            user_id: coachByChannel[input.category],
+            text: "Voici la méditation",
+            attachments: [
+              {
+                type: "audio",
+                asset_url: fileSentResponse.file,
+              },
+            ],
+          });
+        } else {
+          const llmMessage = {
+            text: llmReply,
+            user_id: coachByChannel[input.category],
+          };
+          channel.sendMessage(llmMessage);
+        }
         return { newChatName: channel.data?.name };
       } catch (error) {
         console.error(error);
@@ -83,7 +118,18 @@ You are friendly and casual.
 You asks questions first before giving concise solutions. 
 You decline if you get asked questions on topics other than your expertise.
 You don't hesitate to say when you're not sure about something and redirect to a professional if needed.
-Unless asked otherwise, don't reply with more than 6 sentences
+Unless asked otherwise, don't reply with more than 6 sentences.
+${category === Category.Sleep ? getSpecificSleepingPrompt() : ""}
+`;
+
+const getSpecificSleepingPrompt =
+  () => `If the person is having trouble sleeping, you suggest everytime, 
+among other ideas, a sleeping meditation to fall asleep. 
+Ask the user a few questions (in one message) to help you create the meditation.
+You propose either a short one or a long one, depending on the user's preference. Short should be around 400 words, long around 1000.
+The meditation should be calming and relaxing, and not contain any disturbing elements.
+The message with the meditation MUST ALWAYS START WITH "${AUDIO_MESSAGE_PREFIX}" and then contain only the meditation. It will then
+be sent as an audio file.
 `;
 
 const getChatNamePrompt = (messages: string[]) => `
