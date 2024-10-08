@@ -1,5 +1,4 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { StreamChat } from "stream-chat";
 import { z } from "zod";
 
 import { adaptStreamMessagesToGptMessages } from "../infra/adaptStreamMessagesToGptMessages";
@@ -8,10 +7,8 @@ import {
   queryLLMForSound,
   queryLLMWithHistory,
 } from "../infra/queryLLM";
+import { getChatClient } from "../lib/chat";
 import { publicProcedure } from "../trpc";
-
-const STREAM_API_KEY = process.env.STREAM_API_KEY;
-const STREAM_SECRET = process.env.STREAM_SECRET;
 
 export enum Category {
   Sleep = "Sleep",
@@ -36,16 +33,11 @@ export const chatbotRouter = {
     .mutation(async ({ input }) => {
       try {
         let newChatName: string | undefined;
-        if (!STREAM_API_KEY || !STREAM_SECRET) {
-          throw new Error("STREAM_API_KEY and STREAM_SECRET are required");
-        }
 
-        const chatClient = StreamChat.getInstance(
-          STREAM_API_KEY,
-          STREAM_SECRET,
+        const channel = getChatClient().channel(
+          input.category,
+          input.channelId,
         );
-
-        const channel = chatClient.channel(input.category, input.channelId);
 
         const { messages: chatHistory } = await channel.query({
           messages: { limit: 30 },
