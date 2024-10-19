@@ -118,10 +118,10 @@ const getSpecificSleepingPrompt =
   () => `If the person is having trouble sleeping, you suggest everytime, 
 among other ideas, a sleeping meditation to fall asleep. 
 Ask the user a few questions (in one message) to help you create the meditation.
-You propose either a short one or a long one, depending on the user's preference. Short should be around 400 words, long around 1000.
+You propose either a short one or a long one, depending on the user's preference. Short should be around 400 words, 
+long meditation around 2000 words.
 The meditation should be calming and relaxing, and not contain any disturbing elements.
-The message with the meditation MUST ALWAYS START WITH "${AUDIO_MESSAGE_PREFIX}" and then contain only the meditation. It will then
-be sent as an audio file.
+It will then be sent as an audio file.
 `;
 
 const getChatNamePrompt = (messages: string[]) => `
