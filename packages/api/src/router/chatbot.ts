@@ -1,5 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
-import { Channel } from "stream-chat";
+import { Channel, MessageResponse } from "stream-chat";
 import * as uuid from "uuid";
 import { z } from "zod";
 
@@ -34,8 +34,6 @@ export const chatbotRouter = {
     )
     .mutation(async ({ input }) => {
       try {
-        let newChatName: string | undefined;
-
         const channel = getChatClient().channel(
           input.category,
           input.channelId,
@@ -45,17 +43,11 @@ export const chatbotRouter = {
           messages: { limit: 30 },
         });
 
-        const shouldUpdateChatName =
-          channel.data?.name === DEFAULT_CHAT_NAME ||
-          channel.data?.name?.startsWith(
-            getLegeacyChatNamePrefix(input.category),
-          );
-
-        if (shouldUpdateChatName) {
-          const chatContext = chatHistory.map((message) => message.text ?? "");
-          newChatName = await queryLLM(getChatNamePrompt(chatContext));
-          await channel.update({ name: newChatName });
-        }
+        const newChatName = await updateChatNameIfNeeded({
+          channel,
+          category: input.category,
+          chatHistory,
+        });
 
         const llmReply = await queryLLMWithHistory({
           systemMessage: getCoachingPrompt(input.category),
@@ -75,7 +67,7 @@ export const chatbotRouter = {
           };
           channel.sendMessage(llmMessage);
         }
-        return { newChatName: channel.data?.name };
+        return { newChatName };
       } catch (error) {
         console.error(error);
         throw new Error("Failed to get chat response");
@@ -120,6 +112,29 @@ const sendAudioMessage = async ({
       },
     ],
   });
+};
+
+const updateChatNameIfNeeded = async ({
+  channel,
+  category,
+  chatHistory,
+}: {
+  channel: Channel;
+  category: Category;
+  chatHistory: MessageResponse[];
+}) => {
+  const shouldUpdateChatName =
+    channel.data?.name === DEFAULT_CHAT_NAME ||
+    channel.data?.name?.startsWith(getLegeacyChatNamePrefix(category));
+
+  if (shouldUpdateChatName) {
+    const chatContext = chatHistory.map((message) => message.text ?? "");
+    const newChatName = await queryLLM(getChatNamePrompt(chatContext));
+    await channel.update({ name: newChatName });
+    return newChatName;
+  }
+
+  return null;
 };
 
 const getCoachingPrompt = (category: Category) => `
