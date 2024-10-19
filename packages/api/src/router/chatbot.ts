@@ -1,4 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import { Channel } from "stream-chat";
 import * as uuid from "uuid";
 import { z } from "zod";
 
@@ -62,32 +63,10 @@ export const chatbotRouter = {
         });
 
         if (llmReply.type === "AUDIO") {
-          channel
-            .sendMessage({
-              user_id: coachByChannel[input.category],
-              text: "C'est noté, je prépare la méditation",
-            })
-            .catch(console.error);
-          const audioBuffer = await queryLLMForSound(llmReply.message);
-
-          const fileName = `audio-${uuid.v4()}.mp3`;
-          const fileSentResponse = await channel.sendFile(
-            audioBuffer,
-            fileName,
-            "audio/mpeg",
-            {
-              id: coachByChannel[input.category],
-            },
-          );
-          await channel.sendMessage({
-            user_id: coachByChannel[input.category],
-            text: "Voici la méditation",
-            attachments: [
-              {
-                type: "audio",
-                asset_url: fileSentResponse.file,
-              },
-            ],
+          await sendAudioMessage({
+            channel,
+            message: llmReply.message,
+            coachId: coachByChannel[input.category],
           });
         } else {
           const llmMessage = {
@@ -103,6 +82,45 @@ export const chatbotRouter = {
       }
     }),
 } satisfies TRPCRouterRecord;
+
+/* Handles meditations only for now */
+const sendAudioMessage = async ({
+  channel,
+  coachId,
+  message,
+}: {
+  channel: Channel;
+  message: string;
+  coachId: string;
+}) => {
+  await channel
+    .sendMessage({
+      user_id: coachId,
+      text: "C'est noté, je prépare la méditation",
+    })
+    .catch(console.error);
+
+  const audioBuffer = await queryLLMForSound(message);
+
+  const fileName = `audio-${uuid.v4()}.mp3`;
+  const fileSentResponse = await channel.sendFile(
+    audioBuffer,
+    fileName,
+    "audio/mpeg",
+    { id: coachId },
+  );
+
+  await channel.sendMessage({
+    user_id: coachId,
+    text: "Voici la méditation",
+    attachments: [
+      {
+        type: "audio",
+        asset_url: fileSentResponse.file,
+      },
+    ],
+  });
+};
 
 const getCoachingPrompt = (category: Category) => `
 You are an expert ${category.toLowerCase()} coach with over 20 years of experience in the field. 
