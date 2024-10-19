@@ -1,4 +1,5 @@
 import type { TRPCRouterRecord } from "@trpc/server";
+import * as uuid from "uuid";
 import { z } from "zod";
 
 import { adaptStreamMessagesToGptMessages } from "../infra/adaptStreamMessagesToGptMessages";
@@ -69,15 +70,15 @@ export const chatbotRouter = {
             .catch(console.error);
           const audioBuffer = await queryLLMForSound(llmReply.message);
 
+          const fileName = `audio-${uuid.v4()}.mp3`;
           const fileSentResponse = await channel.sendFile(
             audioBuffer,
-            "sleep.mp3",
+            fileName,
             "audio/mpeg",
             {
               id: coachByChannel[input.category],
             },
           );
-          // TODO: unique name for each file
           await channel.sendMessage({
             user_id: coachByChannel[input.category],
             text: "Voici la méditation",
