@@ -21,8 +21,8 @@ const coachByChannel: Record<Category, string> = {
   [Category.Nutrition]: "nutrition-ai-coach",
   [Category.Sport]: "sport-ai-coach",
 };
+
 const DEFAULT_CHAT_NAME = "Chat";
-const AUDIO_MESSAGE_PREFIX = "[AUDIO MESSAGE]";
 const getLegeacyChatNamePrefix = (category: Category) => `${category}-`;
 
 export const chatbotRouter = {
@@ -60,16 +60,14 @@ export const chatbotRouter = {
           conversationHistory: adaptStreamMessagesToGptMessages(chatHistory),
         });
 
-        if (llmReply.startsWith(AUDIO_MESSAGE_PREFIX)) {
+        if (llmReply.type === "AUDIO") {
           channel
             .sendMessage({
               user_id: coachByChannel[input.category],
               text: "C'est noté, je prépare la méditation",
             })
             .catch(console.error);
-          const audioBuffer = await queryLLMForSound(
-            llmReply.replace(AUDIO_MESSAGE_PREFIX, ""),
-          );
+          const audioBuffer = await queryLLMForSound(llmReply.message);
 
           const fileSentResponse = await channel.sendFile(
             audioBuffer,
@@ -79,6 +77,7 @@ export const chatbotRouter = {
               id: coachByChannel[input.category],
             },
           );
+          // TODO: unique name for each file
           await channel.sendMessage({
             user_id: coachByChannel[input.category],
             text: "Voici la méditation",
@@ -91,7 +90,7 @@ export const chatbotRouter = {
           });
         } else {
           const llmMessage = {
-            text: llmReply,
+            text: llmReply.message,
             user_id: coachByChannel[input.category],
           };
           channel.sendMessage(llmMessage);
