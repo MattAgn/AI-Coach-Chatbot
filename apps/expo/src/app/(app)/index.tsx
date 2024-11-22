@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 
 import { getChatClient } from "~/utils/chatClient";
 import { Categories } from "~/view/components/Categories";
@@ -39,6 +39,11 @@ export default function Index() {
               Hello {userName}
             </Animated.Text>
           </TouchableOpacity>
+          <Button
+            title="Mental Health"
+            color={"white"}
+            onPress={() => router.navigate("/mental-health")}
+          />
           <Categories />
         </View>
       </SafeAreaView>
@@ -55,7 +60,7 @@ const styles = StyleSheet.create({
     fontSize: 23,
     textAlign: "center",
     fontWeight: "bold",
-    marginBottom: 30,
+    marginBottom: 10,
     marginTop: 40,
     color: "white",
   },
