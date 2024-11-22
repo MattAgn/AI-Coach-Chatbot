@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Audio } from "expo-av";
 import { Stack } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -9,15 +10,55 @@ import { GradientBackground } from "~/view/components/GradientBackground";
 
 export default function MentalHealth() {
   const [isRecording, setIsRecording] = useState(false);
+  const [recording, setRecording] = useState<Audio.Recording | null>();
 
   const toggleRecording = () => {
     if (isRecording) {
-      console.log("stop recording");
+      stopRecording();
     } else {
-      console.log("start recording");
+      startRecording();
     }
-    setIsRecording((prev) => !prev);
   };
+
+  async function startRecording() {
+    try {
+      setIsRecording(true);
+      const permissionResponse = await Audio.requestPermissionsAsync();
+
+      if (permissionResponse.status === "granted") {
+        console.log("Permission granted");
+      } else {
+        Alert.alert("Permission not granted");
+      }
+
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      const { recording } = await Audio.Recording.createAsync(
+        Audio.RecordingOptionsPresets.HIGH_QUALITY,
+      );
+      setRecording(recording);
+    } catch (err) {
+      console.error("Failed to start recording", err);
+      setIsRecording(false);
+    }
+  }
+
+  async function stopRecording() {
+    setIsRecording(false);
+    if (!recording) return;
+
+    await recording.stopAndUnloadAsync();
+    const uri = recording.getURI();
+    setRecording(null);
+
+    if (!uri) {
+      console.error("Failed to get URI for recording");
+      return;
+    }
+  }
 
   return (
     <GradientBackground>
@@ -27,12 +68,7 @@ export default function MentalHealth() {
           <Animated.Text entering={FadeIn.duration(800)} style={styles.title}>
             Mental Health
           </Animated.Text>
-          <View
-            style={{
-              justifyContent: "center",
-              flexGrow: 1,
-            }}
-          >
+          <View style={{ justifyContent: "center", flexGrow: 1 }}>
             <TouchableOpacity
               onPress={toggleRecording}
               style={styles.recordingButton}
