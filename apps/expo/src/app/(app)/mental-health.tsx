@@ -92,11 +92,12 @@ export default function MentalHealth() {
   return (
     <GradientBackground>
       <SafeAreaView style={styles.container}>
-        <Stack.Screen />
+        <Stack.Screen
+          options={{
+            headerTitle: "Mental Health",
+          }}
+        />
         <ScrollView style={{ flexGrow: 1 }}>
-          <Animated.Text entering={FadeIn.duration(800)} style={styles.title}>
-            Mental Health
-          </Animated.Text>
           <View
             style={{
               justifyContent: "center",
