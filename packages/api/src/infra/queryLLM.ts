@@ -1,3 +1,4 @@
+import fs from "fs";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -85,4 +86,18 @@ export const queryLLMForSound = async (text: string) => {
   const buffer = Buffer.from(await mp3.arrayBuffer());
 
   return buffer;
+};
+
+export const queryLLMForSpeechToText = async (audioBuffer: Buffer) => {
+  const tempFilePath = `/tmp/${Date.now()}.m4a`;
+  await fs.writeFileSync(tempFilePath, audioBuffer);
+  const response = await openAiClient.audio.transcriptions.create({
+    file: fs.createReadStream(tempFilePath),
+    model: "whisper-1",
+    response_format: "verbose_json",
+    prompt:
+      "This is a dialogue so find either the name or role of each person and then add their name or role before their text every time the speaker switches",
+  });
+  console.log(response);
+  return response.text;
 };

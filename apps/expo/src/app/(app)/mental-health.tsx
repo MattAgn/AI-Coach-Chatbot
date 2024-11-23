@@ -1,16 +1,20 @@
 import { useState } from "react";
-import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Audio } from "expo-av";
+import * as FileSystem from "expo-file-system";
 import { Stack } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
+import { api } from "~/utils/api";
 import { GradientBackground } from "~/view/components/GradientBackground";
 
 export default function MentalHealth() {
   const [isRecording, setIsRecording] = useState(false);
   const [recording, setRecording] = useState<Audio.Recording | null>();
+  const [transcription, setTranscription] = useState<string>();
+  const getTranscription = api.voice.getTranscription.useMutation();
 
   const toggleRecording = () => {
     if (isRecording) {
@@ -23,6 +27,7 @@ export default function MentalHealth() {
   async function startRecording() {
     try {
       setIsRecording(true);
+      setTranscription(undefined);
       const permissionResponse = await Audio.requestPermissionsAsync();
 
       if (permissionResponse.status === "granted") {
@@ -52,12 +57,22 @@ export default function MentalHealth() {
 
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
-    setRecording(null);
 
     if (!uri) {
       console.error("Failed to get URI for recording");
       return;
     }
+    const audioBase64 = await FileSystem.readAsStringAsync(uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    const { transcription } = await getTranscription.mutateAsync({
+      audioBase64,
+    });
+
+    setTranscription(transcription);
+
+    setRecording(null);
   }
 
   return (
@@ -80,6 +95,9 @@ export default function MentalHealth() {
                 style={{ alignSelf: "center", justifyContent: "center" }}
               />
             </TouchableOpacity>
+            <Text style={{ color: "white", marginTop: 30 }}>
+              {transcription}
+            </Text>
           </View>
         </View>
       </SafeAreaView>
