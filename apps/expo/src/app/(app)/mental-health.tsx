@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Audio } from "expo-av";
@@ -10,10 +17,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { api } from "~/utils/api";
 import { GradientBackground } from "~/view/components/GradientBackground";
 
+type AudioTranscription = Array<{ speaker: string; text: string }>;
+
 export default function MentalHealth() {
   const [isRecording, setIsRecording] = useState(false);
   const [recording, setRecording] = useState<Audio.Recording | null>();
-  const [transcription, setTranscription] = useState<string>();
+  const [transcription, setTranscription] = useState<AudioTranscription>();
   const getTranscription = api.voice.getTranscription.useMutation();
 
   const toggleRecording = () => {
@@ -70,7 +79,12 @@ export default function MentalHealth() {
       audioBase64,
     });
 
-    setTranscription(transcription);
+    if (!transcription) {
+      setTranscription([{ speaker: "Error", text: "Failed to transcribe" }]);
+      return;
+    }
+
+    setTranscription(transcription as AudioTranscription);
 
     setRecording(null);
   }
@@ -79,11 +93,16 @@ export default function MentalHealth() {
     <GradientBackground>
       <SafeAreaView style={styles.container}>
         <Stack.Screen />
-        <View style={{ flexGrow: 1 }}>
+        <ScrollView style={{ flexGrow: 1 }}>
           <Animated.Text entering={FadeIn.duration(800)} style={styles.title}>
             Mental Health
           </Animated.Text>
-          <View style={{ justifyContent: "center", flexGrow: 1 }}>
+          <View
+            style={{
+              justifyContent: "center",
+              flexGrow: 1,
+            }}
+          >
             <TouchableOpacity
               onPress={toggleRecording}
               style={styles.recordingButton}
@@ -95,11 +114,13 @@ export default function MentalHealth() {
                 style={{ alignSelf: "center", justifyContent: "center" }}
               />
             </TouchableOpacity>
-            <Text style={{ color: "white", marginTop: 30 }}>
-              {transcription}
-            </Text>
+            {transcription?.map(({ speaker, text }, index) => (
+              <Text style={{ color: "white", marginTop: 10 }} key={index}>
+                Speaker {speaker}: {text}
+              </Text>
+            )) ?? ""}
           </View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </GradientBackground>
   );

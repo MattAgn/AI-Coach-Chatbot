@@ -23,6 +23,7 @@
     "@acme/db": "workspace:*",
     "@acme/validators": "workspace:*",
     "@trpc/server": "catalog:",
+    "assemblyai": "^4.8.0",
     "openai": "^4.58.1",
     "stream-chat": "^8.40.2",
     "superjson": "2.2.1",
