@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   ScrollView,
   StyleSheet,
@@ -7,7 +8,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
@@ -104,17 +104,21 @@ export default function MentalHealth() {
               flexGrow: 1,
             }}
           >
-            <TouchableOpacity
-              onPress={toggleRecording}
-              style={styles.recordingButton}
-            >
-              <Ionicons
-                name={isRecording ? "square" : "mic"}
-                size={BUTTON_SIZE - 30}
-                color={isRecording ? "red" : "black"}
-                style={{ alignSelf: "center", justifyContent: "center" }}
-              />
-            </TouchableOpacity>
+            {getTranscription.isPending ? (
+              <ActivityIndicator size={"large"} color="white" />
+            ) : (
+              <TouchableOpacity
+                onPress={toggleRecording}
+                style={styles.recordingButton}
+              >
+                <Ionicons
+                  name={isRecording ? "square" : "mic"}
+                  size={BUTTON_SIZE - 30}
+                  color={isRecording ? "red" : "black"}
+                  style={{ alignSelf: "center", justifyContent: "center" }}
+                />
+              </TouchableOpacity>
+            )}
             {transcription?.map(({ speaker, text }, index) => (
               <Text style={{ color: "white", marginTop: 10 }} key={index}>
                 Speaker {speaker}: {text}
