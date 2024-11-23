@@ -2,9 +2,7 @@ import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -92,40 +90,24 @@ export default function MentalHealth() {
   return (
     <GradientBackground>
       <SafeAreaView style={styles.container}>
-        <Stack.Screen
-          options={{
-            headerTitle: "Mental Health",
-          }}
-        />
-        <ScrollView style={{ flexGrow: 1 }}>
-          <View
-            style={{
-              justifyContent: "center",
-              flexGrow: 1,
-            }}
-          >
-            {getTranscription.isPending ? (
-              <ActivityIndicator size={"large"} color="white" />
-            ) : (
-              <TouchableOpacity
-                onPress={toggleRecording}
-                style={styles.recordingButton}
-              >
-                <Ionicons
-                  name={isRecording ? "square" : "mic"}
-                  size={BUTTON_SIZE - 30}
-                  color={isRecording ? "red" : "black"}
-                  style={{ alignSelf: "center", justifyContent: "center" }}
-                />
-              </TouchableOpacity>
-            )}
-            {transcription?.map(({ speaker, text }, index) => (
-              <Text style={{ color: "white", marginTop: 10 }} key={index}>
-                Speaker {speaker}: {text}
-              </Text>
-            )) ?? ""}
-          </View>
-        </ScrollView>
+        <Stack.Screen options={{ headerTitle: "Mental Health" }} />
+        <View style={{ justifyContent: "center", flexGrow: 1 }}>
+          {getTranscription.isPending ? (
+            <ActivityIndicator size={"large"} color="white" />
+          ) : (
+            <TouchableOpacity
+              onPress={toggleRecording}
+              style={styles.recordingButton}
+            >
+              <Ionicons
+                name={isRecording ? "square" : "mic"}
+                size={BUTTON_SIZE - 30}
+                color={isRecording ? "red" : "black"}
+                style={{ alignSelf: "center", justifyContent: "center" }}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       </SafeAreaView>
     </GradientBackground>
   );
