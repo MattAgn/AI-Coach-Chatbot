@@ -114,14 +114,28 @@ export const queryLLMForSpeechToText = async (audioBuffer: Buffer) => {
     language_code: "fr",
   };
 
-  const transcript = await assemblyAiClient.transcripts.transcribe(params);
+  const transcriptResponse =
+    await assemblyAiClient.transcripts.transcribe(params);
 
-  if (transcript.utterances?.length === 0) {
+  const summaryPrompt =
+    "Provide a brief summary of the transcript using bullet points for each topic from the point of view of the main person speaking (the patient).";
+
+  const { response: summaryResponse } = await assemblyAiClient.lemur.task({
+    transcript_ids: [transcriptResponse.id],
+    prompt: summaryPrompt,
+    final_model: "anthropic/claude-3-5-sonnet",
+  });
+
+  const utterances = transcriptResponse.utterances;
+
+  if (!utterances || utterances?.length === 0) {
     throw new Error("No utterances found in transcript");
   }
 
-  return transcript.utterances?.map((utterance) => ({
+  const transcript = utterances?.map((utterance) => ({
     speaker: utterance.speaker,
     text: utterance.text,
   }));
+
+  return { transcript, summary: summaryResponse };
 };

@@ -73,9 +73,11 @@ export default function MentalHealth() {
       encoding: FileSystem.EncodingType.Base64,
     });
 
-    const { transcription } = await getTranscription.mutateAsync({
+    const { transcript, summary } = await getTranscription.mutateAsync({
       audioBase64,
     });
+
+    console.log({ transcript, summary });
 
     if (!transcription) {
       setTranscription([{ speaker: "Error", text: "Failed to transcribe" }]);

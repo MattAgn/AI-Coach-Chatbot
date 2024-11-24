@@ -14,8 +14,7 @@ export const voiceRouter = {
     .mutation(async ({ input }) => {
       try {
         const audioBuffer = Buffer.from(input.audioBase64, "base64");
-        const transcription = await queryLLMForSpeechToText(audioBuffer);
-        return { transcription };
+        return await queryLLMForSpeechToText(audioBuffer);
       } catch (error) {
         console.error(error);
         return { transcription: "Failed to transcribe" };
