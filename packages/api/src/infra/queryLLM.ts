@@ -105,14 +105,11 @@ export const queryLLMForSound = async (text: string) => {
 };
 
 export const queryLLMForSpeechToText = async (
-  audioBuffer: Buffer,
+  filePath: string,
   options: { includeSummary: boolean } = { includeSummary: false },
 ) => {
-  const tempFilePath = `/tmp/${Date.now()}.m4a`;
-  await fs.writeFileSync(tempFilePath, audioBuffer);
-
   const params: TranscribeParams = {
-    audio: tempFilePath,
+    audio: filePath,
     speaker_labels: true,
     language_code: "fr",
   };

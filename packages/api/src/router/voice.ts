@@ -1,3 +1,4 @@
+import fs from "fs";
 import { TRPCRouterRecord } from "@trpc/server";
 import { z } from "zod";
 
@@ -14,7 +15,9 @@ export const voiceRouter = {
     .mutation(async ({ input }) => {
       try {
         const audioBuffer = Buffer.from(input.audioBase64, "base64");
-        return await queryLLMForSpeechToText(audioBuffer);
+        const tempFilePath = `/tmp/${Date.now()}.m4a`;
+        await fs.writeFileSync(tempFilePath, audioBuffer);
+        return await queryLLMForSpeechToText(tempFilePath);
       } catch (error) {
         console.error(error);
         return { transcription: "Failed to transcribe" };
