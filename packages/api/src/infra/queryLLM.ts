@@ -1,4 +1,3 @@
-import fs from "fs";
 import { AssemblyAI, TranscribeParams } from "assemblyai";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
